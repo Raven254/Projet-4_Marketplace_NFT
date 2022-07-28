@@ -1,6 +1,6 @@
 import React from "react";
 
-export class Create extends React.Component {
+export class Profil extends React.Component {
     render() {
         return (
             <div
@@ -11,7 +11,7 @@ export class Create extends React.Component {
                 height: '90vh'
               }}
             >
-              <h1>Create</h1>
+              <h1>profil</h1>
             </div>
           );
     }

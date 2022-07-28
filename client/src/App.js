@@ -6,9 +6,10 @@ import {Route, Routes} from 'react-router-dom';
 import {Home} from "./components/Home";
 import {Create} from "./components/Create";
 import {Explore} from "./components/Explore";
+import {Profil} from "./components/Profil";
 
 import "./App.css";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar/Navbar";
 
 class App extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null, addresses: null };
@@ -80,6 +81,7 @@ class App extends Component {
               <Route path="/" element={<Home />} />
               <Route path="/explore" element={<Explore />} />
               <Route path="/create" element={<Create />} />
+              <Route path="/profil" element={<Profil />} />
             </Routes>
         </div>
     );
