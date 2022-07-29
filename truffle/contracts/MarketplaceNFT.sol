@@ -1,36 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.14;
 
-// Importer contrats : ERC1155, ERC721, VRB de Chainlink
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
-import "../node_modules/@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "../node_modules/@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import "./NFTFactory.sol";
 
-contract NFTGeneration is ERC1155, Ownable {
-    constructor() ERC1155("") {}
+contract MarketplaceNFT {
 
-    function setURI(string memory newuri) public onlyOwner {
-        _setURI(newuri);
-    }
+///@dev FONCTION permettant au vendeur de poser son NFT sur la plateforme
+///@param _id id du NFT dont on dépose le prix
+///@param _price prix du NFT
 
-    function mint(address account, uint256 id, uint256 amount, bytes memory data)
-        public
-        onlyOwner
-    {
-        _mint(account, id, amount, data);
-    }
+///@dev FONCTION permettant au vendeur de créer une enchère
+///@param _id id du NFT dont on dépose le prix
+///@param _startPrice prix de départ du NFT
+///@param _time temps total d'attente de l'enchère.
 
-    function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
-        public
-        onlyOwner
-    {
-        _mintBatch(to, ids, amounts, data);
-    }
-}
-
-
-contract MarketplaceNFT is NFTGeneration {
-
-// A construire;
+///@dev FONCTION permettant à l'acheteur d'acheter un NFT sur la plateforme
+///@param _id id du NFT dont on dépose le prix
+// Vérifier que le NFT est bien en vente ; vérifier que l'adresse est valide ; attention à la sécurité
 
 }
