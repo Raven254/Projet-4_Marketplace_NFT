@@ -3,10 +3,11 @@ import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./getWeb3";
 import {Route, Routes} from 'react-router-dom';
 
-import {Home} from "./components/Home";
+import Home from "./components/Home/Home";
 import {Create} from "./components/Create";
-import {Explore} from "./components/Explore";
+import { Explore } from "./components/Explore/Explore";
 import {Profil} from "./components/Profil";
+import Collection from "./components/Collection/Collection";
 
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
@@ -82,6 +83,7 @@ class App extends Component {
               <Route path="/explore" element={<Explore />} />
               <Route path="/create" element={<Create />} />
               <Route path="/profil" element={<Profil />} />
+              <Route path="/collection/:id" element={<Collection />} />
             </Routes>
         </div>
     );

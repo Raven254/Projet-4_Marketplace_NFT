@@ -5,6 +5,7 @@ import styled from 'styled-components';
 export const Nav = styled.nav`
   background: #000;
   height: 80px;
+  // margin-top: -80px;
   display: flex;
   justify-content: space-between;
   padding: 0.5rem calc((100vw - 1000px) / 2);
@@ -43,7 +44,7 @@ export const Bars = styled(FaBars)`
 export const NavMenu = styled.div`
   display: flex;
   align-items: center;
-  margin-right: -44px;
+  margin-right: -24px;
   /* Second Nav */
   /* margin-right: 24px; */
   /* Third Nav */
@@ -57,7 +58,7 @@ export const NavMenu = styled.div`
 export const NavBtn = styled.nav`
   display: flex;
   align-items: center;
-  margin-right: -74px;
+  margin-right: -114px;
   /* Third Nav */
   /* justify-content: flex-end;
   width: 100vw; */
@@ -69,7 +70,7 @@ export const NavBtn = styled.nav`
 export const NavBtnLink = styled(Link)`
   border-radius: 4px;
   background: #256ce1;
-  padding: 10px 22px;
+  padding: 15px 22px;
   color: #fff;
   outline: none;
   border: none;
@@ -77,7 +78,7 @@ export const NavBtnLink = styled(Link)`
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   /* Second Nav */
-  margin-left: 24px;
+  margin-left: 60px;
   &:hover {
     transition: all 0.2s ease-in-out;
     background: #fff;

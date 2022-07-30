@@ -13,15 +13,15 @@ export default function Navbar() {
          <>
          <Nav>
            <NavLink to='/'>
-             <img src={require('../../Images/logo_alyra.jpeg').default} alt='logo' style={{
-            height: 80,
-            width: 100,
+             <img src={require('../../Images/al_log.png').default} alt='logo' style={{
+            height: 75,
+            width: 120,
             paddingRight: 100,
-            marginRight: 100
+            marginRight: 100,
+            backgroundColor: "transparent"
           }}/>
            </NavLink>
            <Bars />
-           <h1 style={{color:'white',paddingRight: 100}}>Alyra's NFT</h1>
            <NavMenu>
              <NavLink to='/Explore' activeStyle>
                Explore
