@@ -23,7 +23,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     // Permet de donner un id à chaque NFT sur la marketplace. Fonctions utilisables :  _tokenId.increment(), _tokenId.decrement(), et _tokenId.current()
     Counters.Counter private _nftCount; 
 
-    struct NFT { // voir quoi ajouter
+    struct NFT721 { // voir quoi ajouter
         uint marketplaceId;
         uint nftId;
         IERC721 nftInstance; // instance du contrat NFT
@@ -65,7 +65,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         uint _resteContrat
     );
 
-    mapping(uint => NFT) public NFTs;
+    mapping(uint => NFT721) public NFTs;
 
     constructor(uint _feePercent, address _clement, address _olivier, address _marwane){ // : A INITIER DANS LE DEPLOYER
         feePercent = _feePercent;
@@ -90,7 +90,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         _nft.safeTransferFrom(msg.sender, address(this), _nftId);
         _nftCount.increment();
         uint _marketplaceId = _nftCount.current();
-        NFTs[_marketplaceId] = NFT (
+        NFTs[_marketplaceId] = NFT721 (
             _marketplaceId,
             _nftId,
             _nft,
@@ -113,7 +113,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@dev FONCTION permettant au vendeur d'arrêter sa vente
     ///@param _marketplaceId id du NFT sur la marketplace
     function stopSelling(uint _marketplaceId) external {
-        NFT memory nft = NFTs[_marketplaceId]; // instanciation du NFT dont on souhaite arrêter la vente
+        NFT721 memory nft = NFTs[_marketplaceId]; // instanciation du NFT dont on souhaite arrêter la vente
         require(msg.sender == nft.seller, unicode"Vous n'êtes pas le vendeur du NFT");
         require(nft.selling == true, "Le NFT nest pas en vente actuellement");
         nft.nftInstance.safeTransferFrom(address(this), msg.sender, nft.nftId);
@@ -131,7 +131,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     function purchaseNFT(uint _marketplaceId) external payable nonReentrant {
         
         require(_marketplaceId > 0 && _marketplaceId <= _nftCount.current(), "Ce NFT n'existe pas.");
-        NFT memory nft = NFTs[_marketplaceId]; // instanciation du NFT voulu à l'achat
+        NFT721 memory nft = NFTs[_marketplaceId]; // instanciation du NFT voulu à l'achat
         uint totalPrice = getTotalPrice(_marketplaceId);
 
         require(msg.value == totalPrice, "Veuillez envoyer le montant exact.");
