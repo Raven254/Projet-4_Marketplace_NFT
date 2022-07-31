@@ -30,7 +30,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         uint price; // pour le price, il faut faire attention à convertir en wei avec web3js, et reconvertir en ether dans l'affichage
         address payable seller;
         bool selling;
-        bool sold;
+        bool sold; // Enlever sold pour garder que selling
     }
 
     //event Offered pour signaler une mise en vente
@@ -160,20 +160,19 @@ contract MarketplaceNFT is ReentrancyGuard {
         return(totalPrice);
     }
 
-    function feeDistribution(uint _feePrice) external onlyCMO {
-        require(_feePrice <= address(this).balance, "Il n'y a pas assez de fonds sur le contrat.");
-        uint partEgale = 33*_feePrice/100; // Améliorer : pour un _feePrice de 30, la partEgale est de 9.9, et donc de 9 (arrondis à l'inf).
+    function feeDistribution(uint _feeAmount) external onlyCMO {
+        require(_feeAmount <= address(this).balance, "Il n'y a pas assez de fonds sur le contrat.");
+        uint partEgale = 33*_feeAmount/100; // Améliorer : pour un _feeAmount de 30, la partEgale est de 9.9, et donc de 9 (arrondis à l'inf). To Wei à faire ici
         Clement.transfer(partEgale);
         Olivier.transfer(partEgale);
         Marwane.transfer(partEgale);
         uint partTotale = partEgale*3;
-        emit FeeDistribution(_feePrice, partTotale, partEgale, address(this).balance);
+        emit FeeDistribution(_feeAmount, partTotale, partEgale, address(this).balance);
     }
 
     ///@dev FONCTION permettant au vendeur de créer une enchère
     ///@param _id id du NFT dont on dépose le prix
     ///@param _startPrice prix de départ du NFT
     ///@param _time temps total d'attente de l'enchère.
-
 
 }

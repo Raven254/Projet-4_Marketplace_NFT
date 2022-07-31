@@ -9,8 +9,8 @@ import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 contract NFTCollection721 is ERC721, ERC721URIStorage, Ownable {
     constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {} // A adapter avec les inputs
+    
     uint256 public tokenIds;
-
 
     function _baseURI() internal pure override returns (string memory) {
        // en construction
