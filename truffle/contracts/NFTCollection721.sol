@@ -20,9 +20,10 @@ contract NFTCollection721 is ERC721, ERC721URIStorage, Ownable {
         public
         onlyOwner
     {
+        tokenIds += 1;
         _safeMint(_to, _tokenId);
         _setTokenURI(_tokenId, _uri);
-        tokenIds += 1;
+        
     }
 
     // The following functions are overrides required by Solidity.
