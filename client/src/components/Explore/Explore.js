@@ -5,7 +5,11 @@ import Catalog from "./Catog.js";
 export class Explore extends React.Component {
     render() {
         return (
-          <div>
+          <div style={{
+            paddingRight:200,
+            paddingLeft:200,
+
+          }}>
             <div
               style={{
                 display: 'flex',

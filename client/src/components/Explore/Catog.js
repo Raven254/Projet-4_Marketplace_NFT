@@ -18,7 +18,6 @@ const Catalog = props => {
             <div className="catalog__btn">
                 <Button to={`/Collection/${props.id}`}
                     onMouseEnter={onHover} onMouseLeave={onHover} primary='true' dark='true'
-                    // onClick={() => dispatch(set(props.id))}
                 >
                     {props.name}
                 </Button>

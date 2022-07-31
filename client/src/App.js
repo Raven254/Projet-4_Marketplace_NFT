@@ -6,8 +6,9 @@ import {Route, Routes} from 'react-router-dom';
 import Home from "./components/Home/Home";
 import {Create} from "./components/Create";
 import { Explore } from "./components/Explore/Explore";
-import {Profil} from "./components/Profil";
+import Profil from "./components/Profil";
 import Collection from "./components/Collection/Collection";
+import NFT from "./components/NFT/NFT";
 
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
@@ -76,16 +77,17 @@ class App extends Component {
 
   render() {
     return (
-        <div className="App">
-          <Navbar/>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/explore" element={<Explore />} />
-              <Route path="/create" element={<Create />} />
-              <Route path="/profil" element={<Profil />} />
-              <Route path="/collection/:id" element={<Collection />} />
-            </Routes>
-        </div>
+      <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/create" element={<Create />} />
+          <Route path="/profil" element={<Profil />} />
+          <Route path="/collection/:id" element={<Collection />} />
+          <Route path="/collection/:idCollection/NFT/:id" element={<NFT />} />
+        </Routes>
+      </div>
     );
 }
 }
