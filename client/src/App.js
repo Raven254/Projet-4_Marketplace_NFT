@@ -12,6 +12,7 @@ import NFT from "./components/NFT/NFT";
 
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 
 class App extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null, addresses: null };
@@ -87,6 +88,7 @@ class App extends Component {
           <Route path="/collection/:id" element={<Collection />} />
           <Route path="/collection/:idCollection/NFT/:id" element={<NFT />} />
         </Routes>
+        <Footer />
       </div>
     );
 }

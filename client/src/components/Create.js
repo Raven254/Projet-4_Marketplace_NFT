@@ -72,7 +72,6 @@ const Create = () => {
           className="form-control"
           id="file"
           name="file"
-          style={{ display: "none" }}
           onChange={fileSelectedHandler}
         />
         <button className="buttonForm" onClick={fileUploadHandler}>

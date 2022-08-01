@@ -50,7 +50,7 @@ export const VideoBg = styled.video`
 `;
 
 export const HomeContent = styled.div`
-    maw-width: 1200px;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
     align-items: center;
