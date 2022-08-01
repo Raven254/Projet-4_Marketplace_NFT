@@ -41,6 +41,7 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
+  padding-bottom: 50px;
   }
   .img{
     height: 30vh;
@@ -81,4 +82,62 @@ button.active {
 }
 .img_NFT{
   width: 600px;
+}
+
+.FormCollectionSection{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 300px;
+  padding-bottom: 40px;
+}
+label{
+height: 24px;
+  width: 231px;
+  color: #333333;
+  font-family: "Open Sans";
+  font-size: 20px;
+  line-height: 24px;
+}
+.form-control{
+  margin: 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  padding-right: 5px;
+  height: 39px;
+  width: 426px;
+  border: 2px solid #E6E6E6;
+  border-radius: 20px;
+}
+.form-control[type='text']{
+  font-size:20px;
+  padding-left: 15px;
+}
+
+
+.buttonForm{
+    cursor: pointer;
+    border: 1px solid #1a202c;
+    padding: 8px;
+    width: 150px;
+    border-radius: 20px;
+
+    background: transparent;
+
+    transition: all 0.1s ease-in;
+  }
+
+  .buttonForm:hover {
+    background: #1a202c;
+    color: #ffffff;
+  }
+
+.FormNFTSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 500px;
+  padding-bottom: 40px;
 }

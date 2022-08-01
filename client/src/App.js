@@ -4,7 +4,7 @@ import getWeb3 from "./getWeb3";
 import {Route, Routes} from 'react-router-dom';
 
 import Home from "./components/Home/Home";
-import {Create} from "./components/Create";
+import Create from "./components/Create";
 import { Explore } from "./components/Explore/Explore";
 import Profil from "./components/Profil";
 import Collection from "./components/Collection/Collection";
