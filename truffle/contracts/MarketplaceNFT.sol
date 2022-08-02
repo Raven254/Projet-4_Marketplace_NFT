@@ -156,7 +156,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@dev Calcule le total du prix à payer avec les fees.
     ///@param _marketplaceId id du NFT sur la marketplace
     function getTotalPrice(uint _marketplaceId) view public returns(uint) {
-        uint totalPrice = NFTs[_marketplaceId].price*(100+feePercent/100);
+        uint totalPrice = NFTs[_marketplaceId].price*(1000+feePercent/1000);
         return(totalPrice);
     }
 
