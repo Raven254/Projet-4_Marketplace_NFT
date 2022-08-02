@@ -79,8 +79,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         _;
     }
 
-    ///@dev fonction permettant au vendeur de déposer son NFT sur la plateforme
-    ///@notice fonction pour proposer son NFT  
+    ///@notice fonction permettant au vendeur de déposer son NFT à la vente sur la plateforme 
     ///@param _nft défini l'instance du NFT associé (pour pouvoir utiliser ses fonctions)
     ///@param _nftId id du NFT que l'on met en vente
     ///@param _price prix du NFT
@@ -111,7 +110,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         // Ajouter la possibilité de paramétrer un temps avant le renvoi du NFT au vendeur, paramétrable par le vendeur, attention sécurité
     }
 
-    ///@dev FONCTION permettant au vendeur d'arrêter sa vente
+    ///@notice fonction permettant au vendeur d'arrêter sa vente
     ///@param _marketplaceId id du NFT sur la marketplace
     function stopSelling(uint _marketplaceId) external {
         NFT721 memory nft = NFTs[_marketplaceId]; // instanciation du NFT dont on souhaite arrêter la vente
@@ -127,7 +126,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         );
     }
 
-    ///@dev FONCTION permettant à l'acheteur d'acheter un NFT sur la plateforme
+    ///@dev fonction permettant à l'utilisateur d'acheter un NFT sur la plateforme
     ///@param _marketplaceId id du NFT sur la marketplace
     function purchaseNFT(uint _marketplaceId) external payable nonReentrant {
         
