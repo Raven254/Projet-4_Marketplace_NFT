@@ -20,7 +20,7 @@ contract MarketplaceNFT is ReentrancyGuard {
 
     using Counters for Counters.Counter; // Ajout de la struct Counters, afin de compter les items à afficher
 
-    // Permet de donner un id à chaque NFT sur la marketplace. Fonctions utilisables :  _tokenId.increment(), _tokenId.decrement(), et _tokenId.current()
+    // Permet de donner un id à chaque NFT sur la marketplace. Fonctions utilisables :  _nftCount.increment(), _nftCount.decrement(), et _nftCount.current()
     Counters.Counter private _nftCount; 
 
     struct NFT721 { // voir quoi ajouter
@@ -170,9 +170,21 @@ contract MarketplaceNFT is ReentrancyGuard {
         emit FeeDistribution(_feeAmount, partTotale, partEgale, address(this).balance);
     }
 
-    ///@dev FONCTION permettant au vendeur de créer une enchère
+    ///@dev Fonction permettant au vendeur de créer une enchère
     ///@param _id id du NFT dont on dépose le prix
     ///@param _startPrice prix de départ du NFT
     ///@param _time temps total d'attente de l'enchère.
 
+
+    ///@notice Fonction permettant de voir tous les NFTs de la plateforme
+    function getMarketItems() public view returns(NFT721[] memory){
+        uint numberOfItems = _nftCount.current();
+        uint itemCount;
+
+        NFT721[] memory marketItems = new NFT721[](numberOfItems);
+
+        for(uint i = 0; i <= numberOfItems; i++){
+           //Boucler pour afficher tous les NFTs de la plateforme 
+        }
+    }
 }
