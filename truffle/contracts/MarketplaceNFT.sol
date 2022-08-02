@@ -79,11 +79,12 @@ contract MarketplaceNFT is ReentrancyGuard {
         _;
     }
 
-    ///@dev FONCTION permettant au vendeur de poser son NFT sur la plateforme
+    ///@dev fonction permettant au vendeur de déposer son NFT sur la plateforme
+    ///@notice fonction pour proposer son NFT  
     ///@param _nft défini l'instance du NFT associé (pour pouvoir utiliser ses fonctions)
     ///@param _nftId id du NFT que l'on met en vente
     ///@param _price prix du NFT
-    function makeOffer(IERC721 _nft, uint _nftId, uint _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
+    function createOffer(IERC721 _nft, uint _nftId, uint _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
         require(_price >= 0, unicode"Vous devez paramétrer un prix positif ou nul.");
         require(_nftId > 0, unicode"L'Id de votre NFT doit être supérieur à 0");
         _nft.setApprovalForAll(address(this), true);

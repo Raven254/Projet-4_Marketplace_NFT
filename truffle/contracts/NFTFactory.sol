@@ -7,20 +7,12 @@ import "./NFTCollection1155.sol";
 
 contract NFTFactory {
 
-    Collection [] public collectionNamesArray;
-
     mapping (string => bool) uriExistsdMap;
     mapping (string => bool) nameExistsMap;
     mapping (string => bool) symbolExistsdMap;
 
-
-
-
-
-
     event NFTCollection721Created(address _creator, string _name, string _symbol, address _collectionAddress);
 
-    
     function createCollection721 (string calldata _name, string calldata _symbol, string calldata _uri /** Ajouter des strings pour les attributs ? et des uint pour les echelles d'aleatoires des attributs ? */) external {       
         
         require(nameExistsMap[ _name] != true, 'This name already exists');
@@ -33,15 +25,13 @@ contract NFTFactory {
         collection.safeMint(msg.sender, _id, _uri ); // EN TRAVAIL
 
         nameExistsMap[ _name] = true;
-        collectionNamesArray.push( _name);     
         symbolExistsdMap[ _symbol] = true;
         uriExistsdMap[ _uri] = true;
-
-
 
         // Ajouter ici les attributs
         emit NFTCollection721Created(msg.sender, _name, _symbol, address(collection) );
     }
+    
     // Pour le Uri --> Prendre en compte le baseUri à mettre directemnt à la création de la collection (au constructor meme), puis tokenUri à chaque mint.
 
     // Fonction pour ajouter un safeMint à partir d'une collection déjà créée
