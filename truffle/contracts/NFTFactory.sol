@@ -7,41 +7,106 @@ import "./NFTCollection1155.sol";
 
 contract NFTFactory {
 
+    struct NFT721 { // voir quoi ajouter
+        string name;
+        string symbol;
+        address collectionAddress;
+        string tokenUri;
+        bool exist;
+    }
+
     mapping (string => bool) uriExistsdMap;
     mapping (string => bool) nameExistsMap;
     mapping (string => bool) symbolExistsdMap;
+    mapping (address => NFT721[]) collectionMap;
 
-    event NFTCollection721Created(address _creator, string _name, string _symbol, address _collectionAddress);
+    event NFTCollection721Created(
+        address creator,
+        string name,
+        string symbol,
+        address collectionAddress
+    );
 
-    function createCollection721 (string calldata _name, string calldata _symbol, string calldata _uri /** Ajouter des strings pour les attributs ? et des uint pour les echelles d'aleatoires des attributs ? */) external {       
-        
-        require(nameExistsMap[ _name] != true, 'This name already exists');
-        require(symbolExistsdMap[ _symbol] != true, 'This symbol already exists');        
-        require(uriExistsdMap[ _uri] != true, 'This uri already exists');
+    event NFT721Created(
+        address creator,
+        string name,
+        string symbol,
+        address collectionAddress,
+        string uri,
+        uint tokenId,
+        uint collectionMapArrayKey
+    );
+
+    ///@notice permet à l'utilisateur de créer une nouvelle collection et de mint un premier NFT
+    function createCollection721(string calldata _name, string calldata _symbol, string calldata _uri /** Ajouter des strings pour les attributs ? et des uint pour les echelles d'aleatoires des attributs ? */) external {       
+        require(keccak256(abi.encodePacked(_name)) != keccak256(abi.encodePacked("")), unicode"Vous devez donner un nom à votre collection");
+        require(nameExistsMap[ _name] != true, unicode'Ce nom existe déjà.');
+        require(symbolExistsdMap[ _symbol] != true, unicode'Ce symbole existe déjà.');        
+        require(uriExistsdMap[ _uri] != true, unicode'Cet URI existe déjà.');
         
         NFTCollection721 collection = new NFTCollection721(_name, _symbol); // Ou utiliser create2 en assembly - yul + AJOUTER LES AUTRES PARAMETRES
     
         uint256 _id = collection.tokenIds();
-        collection.safeMint(msg.sender, _id, _uri ); // EN TRAVAIL
+        collection.safeMint(msg.sender, _id, _uri );
 
         nameExistsMap[ _name] = true;
         symbolExistsdMap[ _symbol] = true;
         uriExistsdMap[ _uri] = true;
+        collectionMap[msg.sender].push(NFT721(_name, _symbol, address(collection), _uri, true));
 
-        // Ajouter ici les attributs
-        emit NFTCollection721Created(msg.sender, _name, _symbol, address(collection) );
+        uint collectionMapArrayKey = collectionMap[msg.sender].length-1;
+
+        emit NFTCollection721Created(msg.sender, _name, _symbol, address(collection));
+        emit NFT721Created(msg.sender, _name, _symbol, address(collection), _uri, _id, collectionMapArrayKey);
     }
     
-    // Pour le Uri --> Prendre en compte le baseUri à mettre directemnt à la création de la collection (au constructor meme), puis tokenUri à chaque mint.
+    ///@notice permet de mint un NFT d'une collection déjà existante à partir d'un nom
+    //function mintExistingCollection7211(string memory _name, string calldata _uri) external {
+    //   NFT721[] memory collections = collectionMap[msg.sender];
+    //   require(collections.length > 0);
 
-    // Fonction pour ajouter un safeMint à partir d'une collection déjà créée
-    // --> Pour ça faire un mapping adresse --> Tableau de struct, à partir d'une struct NFT.
-    // On va require que le mint à faire est issu d'une des collections et on va lancer le safeMint
-    
+    //   uint associatedCollectionKey;
+    //   address associatedCollectionContract;
+    //   bool associatedCollectionExists;
+
+    //   for(uint i = 0; i < collections.length; i++){
+    //        if ( keccak256(abi.encodePacked(collections[i].name)) == keccak256(abi.encodePacked(_name))) {
+    //            associatedCollectionExists = true;
+    //            associatedCollectionKey = i;
+    //            associatedCollectionContract = collections[i].collectionAddress;
+    //        }
+    //    }
+
+    //    require(associatedCollectionExists == true);
+
+    //}
+
+    ///@notice permet de mint un NFT d'une collection déjà existante à partir d'une clé
+    function mintExistingCollection721(uint _key, string calldata _uri) external {
+        NFT721 memory collectionStruct = collectionMap[msg.sender][_key];
+        require(collectionStruct.exist == true);
+
+        NFTCollection721 collection = NFTCollection721(collectionStruct.collectionAddress);
+        uint256 _id = collection.tokenIds();
+        collection.safeMint(msg.sender, _id, _uri );
+
+        uriExistsdMap[ _uri] = true;
+
+        emit NFT721Created(msg.sender, collectionStruct.name, collectionStruct.symbol, address(collection), _uri, _id, _key);
+    }
+
+    ///@notice permet de récupérer les collections de l'utilisateur
+    function getCollections(address _addr) public view returns(NFT721[] memory) {
+        return collectionMap[_addr];
+        }
+    }
+
+
+    // Pour le Uri --> ajouter base uri (https://cf-ipfs.com/ipfs/:hash) au constructor, puis tokenUri (1.png) au mint des NFT.
+ 
    // function createCollection1155 (string calldata _creator, string calldata _uri, uint _totalSupply, uint _id, uint256 _amount, bytes memory _data /** Ajouter des strings pour les attributs ? et des uint pour les echelles d'aleatoires des attributs ? */) external {
     //    NFTCollection1155 collection = new NFTCollection1155(_uri); // Ou utiliser create2 en assembly - yul + AJOUTER LES AUTRES PARAMETRES
      //   NFTCollection1155(collection).mint(msg.sender, _id, _amount, _data ); // EN TRAVAIL
         // Ajouter ici les attributs
         // emit NFTCollectionCreated(_creator, address(collection), block.timestamp, _totalSupply);
     //}
-}
