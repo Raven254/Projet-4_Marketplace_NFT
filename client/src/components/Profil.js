@@ -6,7 +6,7 @@ const profil = {
   address: "0x545rt54et5y545454",
 };
 
-const Profil = () => {
+const Profil = ({addr}) => {
   const result = getAllCollections().find(({ id }) => id == 1);
   const result_NFT = result.NFT;
   const data = result_NFT.filter((pop) => pop.address == profil.address);
@@ -26,7 +26,7 @@ const Profil = () => {
         }}
       >
         <h2 style={{ fontSize: "2em", textAlign: "center" }}>
-          Welcome {profil.address}
+          Welcome {addr}
         </h2>
       </div>
       <div className="explore__content">
