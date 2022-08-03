@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.14;
 
-// Importer contrats : ERC1155, ERC721, VRB de Chainlink
+// Importer contrats : IERC1155, IERC721, VRB de Chainlink
+import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+
 import "./NFTCollection721.sol";
 import "./NFTCollection1155.sol";
 
@@ -10,8 +12,9 @@ contract NFTFactory {
     struct NFT721 { // voir quoi ajouter
         string name;
         string symbol;
-        address collectionAddress;
         string tokenUri;
+        address collectionAddress;
+        uint totalSupply;
         bool exist;
     }
 
@@ -52,12 +55,12 @@ contract NFTFactory {
         nameExistsMap[ _name] = true;
         symbolExistsdMap[ _symbol] = true;
         uriExistsdMap[ _uri] = true;
-        collectionMap[msg.sender].push(NFT721(_name, _symbol, address(collection), _uri, true));
+        collectionMap[msg.sender].push(NFT721(_name, _symbol, _uri, address(collection), collection.tokenIds(), true));
 
         uint collectionMapArrayKey = collectionMap[msg.sender].length-1;
 
         emit NFTCollection721Created(msg.sender, _name, _symbol, address(collection));
-        emit NFT721Created(msg.sender, _name, _symbol, address(collection), _uri, _id, collectionMapArrayKey);
+        emit NFT721Created(msg.sender, _name, _symbol, address(collection), _uri, collection.tokenIds(), collectionMapArrayKey);
     }
     
     ///@notice permet de mint un NFT d'une collection déjà existante à partir d'un nom
@@ -83,16 +86,19 @@ contract NFTFactory {
 
     ///@notice permet de mint un NFT d'une collection déjà existante à partir d'une clé
     function mintExistingCollection721(uint _key, string calldata _uri) external {
+        require(_key < collectionMap[msg.sender].length);
         NFT721 memory collectionStruct = collectionMap[msg.sender][_key];
         require(collectionStruct.exist == true);
+        require(uriExistsdMap[ _uri] != true, unicode'Cet URI existe déjà.'); // voir si on conserve cette ligne
 
         NFTCollection721 collection = NFTCollection721(collectionStruct.collectionAddress);
         uint256 _id = collection.tokenIds();
         collection.safeMint(msg.sender, _id, _uri );
 
         uriExistsdMap[ _uri] = true;
+        collectionMap[msg.sender][_key].totalSupply = collection.tokenIds();
 
-        emit NFT721Created(msg.sender, collectionStruct.name, collectionStruct.symbol, address(collection), _uri, _id, _key);
+        emit NFT721Created(msg.sender, collectionStruct.name, collectionStruct.symbol, address(collection), _uri, collection.tokenIds(), _key);
     }
 
     ///@notice permet de récupérer les collections de l'utilisateur
