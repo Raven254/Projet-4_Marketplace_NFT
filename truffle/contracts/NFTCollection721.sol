@@ -12,10 +12,6 @@ contract NFTCollection721 is ERC721, ERC721URIStorage, Ownable {
     
     uint256 public tokenIds;
 
-    function _baseURI() internal pure override returns (string memory) {
-       // en construction
-    }
-
     function safeMint(address _to, uint256 _tokenId, string memory _uri)
         public
         onlyOwner
