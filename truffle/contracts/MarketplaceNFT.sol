@@ -2,11 +2,10 @@
 pragma solidity 0.8.14;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
-
-import "./NFTFactory.sol"; // Non-nécessaire
 
 contract MarketplaceNFT is ReentrancyGuard {
 
@@ -30,7 +29,6 @@ contract MarketplaceNFT is ReentrancyGuard {
         uint price; // pour le price, il faut faire attention à convertir en wei avec web3js, et reconvertir en ether dans l'affichage
         address payable seller;
         bool selling;
-        bool sold; // Enlever sold pour garder que selling
     }
 
     //event Offered pour signaler une mise en vente
@@ -96,8 +94,7 @@ contract MarketplaceNFT is ReentrancyGuard {
             _nft,
             _price,
             payable(msg.sender),
-            true,
-            false
+            true
         );
 
         emit Offered(
@@ -135,13 +132,12 @@ contract MarketplaceNFT is ReentrancyGuard {
         uint totalPrice = getTotalPrice(_marketplaceId);
 
         require(msg.value == totalPrice, "Veuillez envoyer le montant exact.");
-        require(nft.sold == false, unicode"Ce NFT n'est pas en vente ou a déjà été vendu");
+        require(nft.selling == true, unicode"Ce NFT n'est pas en vente ou a déjà été vendu");
         uint fee = totalPrice - nft.price;
         feeVault += fee;
         nft.seller.transfer(nft.price);
         nft.nftInstance.safeTransferFrom(address(this), msg.sender, nft.nftId);
         
-        NFTs[_marketplaceId].sold = true;
         NFTs[_marketplaceId].selling = false;
 
         emit Bought(
@@ -176,15 +172,44 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _time temps total d'attente de l'enchère.
 
 
+    /////////// EXPERIMENTAL ///////////
+
     ///@notice Fonction permettant de voir tous les NFTs de la plateforme
-    function getMarketItems() public view returns(NFT721[] memory){
-        uint numberOfItems = _nftCount.current();
-        uint itemCount;
+    function getAllMarketItems() public view returns(NFT721[] memory){
+        uint totalNftCount = _nftCount.current();
 
-        NFT721[] memory marketItems = new NFT721[](numberOfItems);
+        NFT721[] memory marketItems = new NFT721[](totalNftCount);
 
-        for(uint i = 0; i <= numberOfItems; i++){
-           //Boucler pour afficher tous les NFTs de la plateforme 
+        for(uint i = 1; i <= totalNftCount; i++){
+        //   marketItems.push(NFTs[i]);
         }
+
+        return(marketItems);
     }
+
+    ///@notice Fonction permettant de voir tous mes NFTs
+    /**function getMyItems() public view returns(NFT721[] memory){
+        uint totalNftCount = _nftCount.current();
+
+        NFT721[] memory marketItems = new NFT721[](totalNftCount);
+
+        for(uint i = 1; i <= totalNftCount; i++){
+           marketItems.push(NFTs[i]);
+        }
+
+        return(marketItems);
+    }*/
+
+    ///@notice Fonction permettant de voir tous mes NFTs listés
+    /**function getMyMarketItems() public view returns(NFT721[] memory){
+        uint totalNftCount = _nftCount.current();
+
+        NFT721[] memory marketItems = new NFT721[](totalNftCount);
+
+        for(uint i = 1; i <= totalNftCount; i++){
+        //   marketItems.push(NFTs[i]);
+        }
+
+        return(marketItems);
+        }*/
 }
