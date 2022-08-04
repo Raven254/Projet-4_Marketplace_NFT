@@ -25,15 +25,27 @@ const CatalogNFT = (props) => {
         <img src={props.img} className="img" alt="" />
       </Link>
       <div className="catalog__btn">
-        <Button
-          to="/Create/"
-          onMouseEnter={onHover}
-          onMouseLeave={onHover}
-          primary="true"
-          dark="true"
-        >
-          {props.price} ETH
-        </Button>
+        {props.price != null ? (
+          <Button
+            to="/Create/"
+            onMouseEnter={onHover}
+            onMouseLeave={onHover}
+            primary="true"
+            dark="true"
+          >
+            {props.price} ETH
+          </Button>
+        ) : (
+          <Button
+            to="/Create/"
+            onMouseEnter={onHover}
+            onMouseLeave={onHover}
+            primary="true"
+            dark="true"
+          >
+            - ETH
+          </Button>
+        )}
       </div>
     </motion.div>
   );

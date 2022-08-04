@@ -10,6 +10,7 @@ const Profil = ({addr}) => {
   const result = getAllCollections().find(({ id }) => id == 1);
   const result_NFT = result.NFT;
   const data = result_NFT.filter((pop) => pop.address == profil.address);
+  
   return (
     <div
       style={{
