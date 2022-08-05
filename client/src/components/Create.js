@@ -6,6 +6,8 @@ const Create = () => {
     file: null,
     nameCollection: "",
     nameNFT: "",
+    symbol: "",
+    file_collection: null,
   };
   const options = [
     { label: "Fruit", value: "fruit" },
@@ -23,6 +25,7 @@ const Create = () => {
   };
   const fileUploadHandler = (event) => {
     console.log(state.file);
+    console.log(state.file_collection);
   };
   const addCollection = (event) => {};
   return (
@@ -31,19 +34,29 @@ const Create = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        height: "90vh",
+        height: "130vh",
       }}
     >
       <div className="FormCollectionSection">
-        <h1 style={{ fontSize: "3em", textAlign: "center" }}>
+         <h1 style={{ fontSize: "3em" }}>
           Créez une collection
-        </h1>
+        </h1> 
         <label htmlFor="NameCollection">Nom de la collection</label>
         <input
           type="text"
           className="form-control"
           id="NameCollection"
           name="NameCollection"
+        />
+        <label htmlFor="NameCollection">Le symbole</label>
+        <input type="text" className="form-control" id="Symbol" name="Symbol" />
+        <label htmlFor="NameCollection">Inserez une image</label> 
+        <input
+          type="file"
+          className="form-control"
+          id="file_collection"
+          name="file_collection"
+          onChange={fileSelectedHandler}
         />
         <button className="buttonForm" onClick={addCollection}>
           Ajoutez

@@ -1,5 +1,10 @@
 import { useEffect } from "react";
 
+const profil = {
+  address: "0x545rt54et5y545454",
+};
+
+
 function Filter({ popular, setActiveSell, setFiltered, activeSell }) {
   useEffect(() => {
     if (activeSell === "All") {
@@ -27,6 +32,18 @@ function Filter({ popular, setActiveSell, setFiltered, activeSell }) {
       const filteredDecroissant = popular.sort((a, b) => b.price - a.price);
       setFiltered(filteredDecroissant);
       console.log(filteredDecroissant);
+      return;
+    }
+    if (activeSell === "Decroissant") {
+      const filteredDecroissant = popular.sort((a, b) => b.price - a.price);
+      setFiltered(filteredDecroissant);
+      console.log(filteredDecroissant);
+      return;
+    }
+    if (activeSell === "Mine") {
+      const filteredMine= popular.filter((pop) => pop.address == profil.address);
+      setFiltered(filteredMine);
+      console.log(filteredMine);
       return;
     }
   }, [activeSell]);
@@ -61,6 +78,12 @@ function Filter({ popular, setActiveSell, setFiltered, activeSell }) {
         onClick={() => setActiveSell("Decroissant")}
       >
         Prix décroissant
+      </button>
+      <button
+        className={activeSell == "Mine" ? "active" : ""}
+        onClick={() => setActiveSell("Mine")}
+      >
+        Mes NFTs
       </button>
     </div>
   );

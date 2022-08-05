@@ -89,8 +89,9 @@ button.active {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 300px;
+  height: 500px;
   padding-bottom: 40px;
+  padding-top: 40px;
 }
 label{
 height: 24px;
@@ -120,6 +121,7 @@ height: 24px;
     cursor: pointer;
     border: 1px solid #1a202c;
     padding: 8px;
+    margin-top: 15px;
     width: 150px;
     border-radius: 20px;
 

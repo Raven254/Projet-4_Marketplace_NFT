@@ -2,26 +2,38 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import getAllCollections from "../../fake_data/Collections";
 
+const profil = {
+  address: "0x545rt54et5y545454",
+};
+
 function NFT() {
+  const state = {
+    Price: "",
+  };
   const params = useParams();
   const collection = getAllCollections().find(
     ({ id }) => id == params.idCollection
   );
   const collection_NFT = collection.NFT;
   const NFT = collection_NFT.find(({ id }) => id == params.id);
+
+  const addPrice = (event) => {
+    console.log(event.target.value);
+  };
   return (
     <div
       style={{
         paddingRight: 200,
         paddingLeft: 200,
+        paddingBottom: 120,
       }}
     >
       <div
         style={{
           display: "flex",
           justifyContent: "center",
-          paddingTop: 15,
-          paddingBottom: 25,
+          paddingTop: 10,
+          paddingBottom: 20,
           height: 150,
         }}
       >
@@ -45,15 +57,50 @@ function NFT() {
           >
             Informations :
           </h3>
-          <p> Le prix est de {NFT.price} ETH</p>
-          <p> Le NFT appartient à {NFT.address} </p>
-          {NFT.sell == true ? (
+          {NFT.address == profil.address ? (
             <div>
-              <p> Ce NFT est à vendre</p>
-              <button className="active">Achetez </button>
+              <p> Ceci est un NFT qui vous appartient </p>
             </div>
           ) : (
-            <p>Ce NFT n'est pas à vendre</p>
+            <div>
+              <p> Le NFT appartient à {NFT.address} </p>
+            </div>
+          )}
+          {NFT.price == null && NFT.address == profil.address ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                paddingTop: 10,
+                alignItems: "center",
+              }}
+            >
+              <label htmlFor="NameCollection">Ajout d'un prix</label>
+              <input
+                type="text"
+                className="form-control"
+                id="Price"
+                name="Price"
+              />
+              <button className="buttonForm" onClick={addPrice}>
+                Ajoutez
+              </button>
+            </div>
+          ) : (
+            <div>
+              <p> Ce NFT est à vendre au prix de {NFT.price} ETH</p>
+            </div>
+          )}
+          {NFT.sell == true && NFT.address != profil.address ? (
+            <div>
+              <button className="active">Achetez </button>
+            </div>
+          ) : NFT.address == profil.address ? (
+            <div></div>
+          ) : (
+            <div>
+              <p>Ce NFT n'est pas à vendre</p>
+            </div>
           )}
         </div>
       </div>
