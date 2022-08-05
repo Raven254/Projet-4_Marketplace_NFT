@@ -6,7 +6,7 @@ const { NFTStorage } = require("nft.storage/dist/bundle.esm.min.js");
 const apiKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAwN2I4NjhhMjE2OUE2MjA5OThjODZENmRhYWEwRGRhN0FBNDJhNDEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1OTUzOTM3NTY4MSwibmFtZSI6Ik1hcmtldHBsYWNlTkZUIn0.LqTPGBuDi7TsOcjSTm2ofGCNZju67fsJECn-PE0fEZQ";
 
-const Create = ({ contract }) => {
+const Create = ({ contract, addr }) => {
   const client = new NFTStorage({ token: apiKey });
   console.log(client);
   const state = {
@@ -34,7 +34,7 @@ const Create = ({ contract }) => {
   };
   const SelectedNameCollection = (event) => {
     state.nameCollection = event.target.value;
-    console.log(contract);
+    console.log(addr[0]);
   };
   const SelectedSymbole = (event) => {
     state.symbol = event.target.value;
@@ -53,12 +53,9 @@ const Create = ({ contract }) => {
     const uri = "https://" + cid + ".ipfs.nftstorage.link/" + nameCollection;
     console.log(uri);
     console.log(contract);
-    const send = await contract.methods.createCollection721(
-      nameCollection,
-      symbol,
-      uri
-    );
-    console.log(send)
+    const send = await contract.methods
+      .createCollection721(nameCollection, symbol, uri)
+      .send({ from: addr[0] });
   };
   return (
     <div

@@ -60,6 +60,10 @@ function App() {
         //  let workflowStatus = await instance.methods.workflowStatus().call();
         //  let owner = await instance.methods.owner().call();
         //  setContractState({ owner: owner, workflowStatus: workflowStatus });
+        const collectionN = await instanceNFTFactory.methods
+          .getCollections(deployedNetwork.address)
+          .call();
+        console.log(collectionN);
 
         setState({
           web3: web3,
@@ -82,7 +86,7 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route
           path="/create"
-          element={<Create contract={state.contractNFTFactory} />}
+          element={<Create contract={state.contractNFTFactory} addr={state.accounts} />}
         />
         <Route path="/profil" element={<Profil addr={state.accounts} />} />
         <Route path="/collection/:id" element={<Collection />} />
