@@ -43,6 +43,7 @@ contract NFTFactory {
     ///@notice permet à l'utilisateur de créer une nouvelle collection et de mint un premier NFT
     function createCollection721(string calldata _name, string calldata _symbol, string calldata _uri /** Ajouter des strings pour les attributs ? et des uint pour les echelles d'aleatoires des attributs ? */) external {       
         require(keccak256(abi.encodePacked(_name)) != keccak256(abi.encodePacked("")), unicode"Vous devez donner un nom à votre collection");
+        require(bytes(_uri).length > 0, "Vous devez fournir une image");
         require(nameExistsMap[ _name] != true, unicode'Ce nom existe déjà.');
         require(symbolExistsdMap[ _symbol] != true, unicode'Ce symbole existe déjà.');        
         require(uriExistsdMap[ _uri] != true, unicode'Cet URI existe déjà.');
@@ -105,10 +106,16 @@ contract NFTFactory {
     function getCollections(address _addr) public view returns(NFT721[] memory) {
         return collectionMap[_addr];
         }
+
+    ///@notice retourne tous les noms de collections de l'utilisateur
+    
+
+    ///@notice retourne tous les tokenURI par collections
+
+    ///@notice retourne le nombre de collections créées par l'utilisateur
+    function getNbCollection(address _addr) public view returns(uint) {
+        return collectionMap[_addr].length;
     }
-
-
-    // Pour le Uri --> ajouter base uri (https://cf-ipfs.com/ipfs/:hash) au constructor, puis tokenUri (1.png) au mint des NFT.
  
    // function createCollection1155 (string calldata _creator, string calldata _uri, uint _totalSupply, uint _id, uint256 _amount, bytes memory _data /** Ajouter des strings pour les attributs ? et des uint pour les echelles d'aleatoires des attributs ? */) external {
     //    NFTCollection1155 collection = new NFTCollection1155(_uri); // Ou utiliser create2 en assembly - yul + AJOUTER LES AUTRES PARAMETRES
@@ -116,3 +123,9 @@ contract NFTFactory {
         // Ajouter ici les attributs
         // emit NFTCollectionCreated(_creator, address(collection), block.timestamp, _totalSupply);
     //}
+
+    
+
+    }
+
+    

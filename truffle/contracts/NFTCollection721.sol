@@ -11,7 +11,6 @@ contract NFTCollection721 is ERC721, ERC721URIStorage, Ownable {
     constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {}
     
     uint256 public tokenIds;
-    string private _baseTokenURI = "ipfs://"; // changer l'adresse IPFS
 
     function safeMint(address _to, uint256 _tokenId, string memory _uri)
         public
@@ -27,10 +26,6 @@ contract NFTCollection721 is ERC721, ERC721URIStorage, Ownable {
 
     function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(_tokenId);
-    }
-
-    function _baseURI() internal view virtual override returns (string memory) {
-        return _baseTokenURI;
     }
 
     function tokenURI(uint256 tokenId)

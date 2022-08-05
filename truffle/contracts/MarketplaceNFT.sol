@@ -188,28 +188,43 @@ contract MarketplaceNFT is ReentrancyGuard {
     }
 
     ///@notice Fonction permettant de voir tous mes NFTs
-    /**function getMyItems() public view returns(NFT721[] memory){
-        uint totalNftCount = _nftCount.current();
+    /**function getMyNfts() public view returns (NFT[] memory) {
+    uint nftCount = _nftCount.current();
+    uint myNftCount = 0;
+    for (uint i = 0; i < nftCount; i++) {
+      if (_idToNFT[i + 1].owner == msg.sender) {
+        myNftCount++;
+      }
+    }
 
-        NFT721[] memory marketItems = new NFT721[](totalNftCount);
+    NFT[] memory nfts = new NFT[](myNftCount);
+    uint nftsIndex = 0;
+    for (uint i = 0; i < nftCount; i++) {
+      if (_idToNFT[i + 1].owner == msg.sender) {
+        nfts[nftsIndex] = _idToNFT[i + 1];
+        nftsIndex++;
+      }
+    }
+    return nfts;
+  }
 
-        for(uint i = 1; i <= totalNftCount; i++){
-           marketItems.push(NFTs[i]);
-        }
+  function getMyListedNfts() public view returns (NFT[] memory) {
+    uint nftCount = _nftCount.current();
+    uint myListedNftCount = 0;
+    for (uint i = 0; i < nftCount; i++) {
+      if (_idToNFT[i + 1].seller == msg.sender && _idToNFT[i + 1].listed) {
+        myListedNftCount++;
+      }
+    }
 
-        return(marketItems);
-    }*/
-
-    ///@notice Fonction permettant de voir tous mes NFTs listés
-    /**function getMyMarketItems() public view returns(NFT721[] memory){
-        uint totalNftCount = _nftCount.current();
-
-        NFT721[] memory marketItems = new NFT721[](totalNftCount);
-
-        for(uint i = 1; i <= totalNftCount; i++){
-        //   marketItems.push(NFTs[i]);
-        }
-
-        return(marketItems);
-        }*/
+    NFT[] memory nfts = new NFT[](myListedNftCount);
+    uint nftsIndex = 0;
+    for (uint i = 0; i < nftCount; i++) {
+      if (_idToNFT[i + 1].seller == msg.sender && _idToNFT[i + 1].listed) {
+        nfts[nftsIndex] = _idToNFT[i + 1];
+        nftsIndex++;
+      }
+    }
+    return nfts;
+  }*/
 }
