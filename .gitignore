@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Contract
+./contracts/MarketplaceNFT.sol
+
 # Dependencies
 node_modules
 ./truffle/node_modules
