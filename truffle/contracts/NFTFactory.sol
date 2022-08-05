@@ -2,14 +2,24 @@
 pragma solidity 0.8.14;
 
 // Importer contrats : IERC1155, IERC721, VRB de Chainlink
+import "../node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+
+import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 
 import "./NFTCollection721.sol";
 import "./NFTCollection1155.sol";
 
 contract NFTFactory {
 
-    struct NFT721 { // voir quoi ajouter
+    using Counters for Counters.Counter; // Ajout de la struct Counters, afin de compter les items à afficher
+
+    // Permet de donner un id à chaque NFT sur la marketplace. Fonctions utilisables :  _nftCount.increment(), _nftCount.decrement(), et _nftCount.current()
+    Counters.Counter private _collectionCounter;
+    Counters.Counter private _marketplaceIdCounter;
+
+    struct collection721 {
+        uint collectionId;
         string name;
         string symbol;
         string tokenUri;
@@ -18,10 +28,22 @@ contract NFTFactory {
         bool exist;
     }
 
+    struct NFT721 {
+        uint marketplaceId;
+        uint nftId;
+        IERC721 nftInstance; // instance du contrat NFT
+        uint price; // pour le price, il faut faire attention à convertir en wei avec web3js, et reconvertir en ether dans l'affichage
+        address payable seller;
+        bool selling;
+    }
+
     mapping (string => bool) uriExistsdMap;
     mapping (string => bool) nameExistsMap;
     mapping (string => bool) symbolExistsdMap;
-    mapping (address => NFT721[]) collectionMap;
+    mapping (address => collection721[]) collectionMap;
+    mapping (string => NFT721[]) itemsByCollectionMap;
+
+    collection721[] allNFTCollections;
 
     event NFTCollection721Created(
         address creator,
@@ -53,10 +75,18 @@ contract NFTFactory {
         uint256 _id = collection.tokenIds();
         collection.safeMint(msg.sender, _id, _uri );
 
+        _collectionCounter.increment();
+        _marketplaceIdCounter.increment();
+        uint collectionId = _marketplaceIdCounter.current();
+        uint marketplaceId = _marketplaceIdCounter.current();
+
         nameExistsMap[ _name] = true;
         symbolExistsdMap[ _symbol] = true;
         uriExistsdMap[ _uri] = true;
-        collectionMap[msg.sender].push(NFT721(_name, _symbol, _uri, address(collection), collection.tokenIds(), true));
+
+        allNFTCollections.push(collection721(collectionId, _name, _symbol, _uri, address(collection), collection.tokenIds(), true));
+        collectionMap[msg.sender].push(collection721(collectionId, _name, _symbol, _uri, address(collection), collection.tokenIds(), true));
+        itemsByCollectionMap[_name].push(NFT721(marketplaceId, collection.tokenIds(), IERC721(collection), 0, payable(msg.sender), false));
 
         uint collectionMapArrayKey = collectionMap[msg.sender].length-1;
 
@@ -64,68 +94,55 @@ contract NFTFactory {
         emit NFT721Created(msg.sender, _name, _symbol, address(collection), _uri, collection.tokenIds(), collectionMapArrayKey);
     }
     
-    ///@notice permet de mint un NFT d'une collection déjà existante à partir d'un nom
-    //function mintExistingCollection7211(string memory _name, string calldata _uri) external {
-    //   NFT721[] memory collections = collectionMap[msg.sender];
-    //   require(collections.length > 0);
-
-    //   uint associatedCollectionKey;
-    //   address associatedCollectionContract;
-    //   bool associatedCollectionExists;
-
-    //   for(uint i = 0; i < collections.length; i++){
-    //        if ( keccak256(abi.encodePacked(collections[i].name)) == keccak256(abi.encodePacked(_name))) {
-    //            associatedCollectionExists = true;
-    //            associatedCollectionKey = i;
-    //            associatedCollectionContract = collections[i].collectionAddress;
-    //        }
-    //    }
-
-    //    require(associatedCollectionExists == true);
-
-    //}
-
     ///@notice permet de mint un NFT d'une collection déjà existante à partir d'une clé
     function mintExistingCollection721(uint _key, string calldata _uri) external {
         require(_key < collectionMap[msg.sender].length);
-        NFT721 memory collectionStruct = collectionMap[msg.sender][_key];
+        collection721 memory collectionStruct = collectionMap[msg.sender][_key];
         require(collectionStruct.exist == true);
         require(uriExistsdMap[ _uri] != true, unicode'Cet URI existe déjà.'); // voir si on conserve cette ligne
 
         NFTCollection721 collection = NFTCollection721(collectionStruct.collectionAddress);
         uint256 _id = collection.tokenIds();
         collection.safeMint(msg.sender, _id, _uri );
+        
+        string memory name = collectionMap[msg.sender][_key].name;
+        _marketplaceIdCounter.increment();
+        uint marketplaceId = _marketplaceIdCounter.current();
 
         uriExistsdMap[ _uri] = true;
         collectionMap[msg.sender][_key].totalSupply = collection.tokenIds();
+        itemsByCollectionMap[name].push(NFT721(marketplaceId, collection.tokenIds(), IERC721(collection), 0, payable(msg.sender), false));
 
         emit NFT721Created(msg.sender, collectionStruct.name, collectionStruct.symbol, address(collection), _uri, collection.tokenIds(), _key);
     }
 
-    ///@notice permet de récupérer les collections de l'utilisateur
-    function getCollections(address _addr) public view returns(NFT721[] memory) {
-        return collectionMap[_addr];
+
+    ///@notice récupère toutes les collections créées
+    function getAllCollections() public view returns(collection721[] memory) {
+        return(allNFTCollections);
         }
 
-    ///@notice retourne tous les noms de collections de l'utilisateur
+    ///@notice récupère toutes les collections de l'utilisateur
+    function getCollectionsByAddress(address _addr) public view returns(collection721[] memory) {
+        return collectionMap[_addr];
+        }
     
+    ///@notice récupère tous les NFTs d'une collection (identifiable par son nom)
+     function getAllItemsByCollections(string memory _name) public view returns(NFT721[] memory) {
+        return itemsByCollectionMap[_name];
+        }
 
-    ///@notice retourne tous les tokenURI par collections
+    ///@notice récupère le NFT (identifiable par son ID) d'une collection particulière (identifiable par son nom)
+    function getItemByCollections(string memory _name, uint _id) public view returns(NFT721 memory) {
+        uint arrayId = _id - 1; // Permet à partir de l'id du NFT de le retrouver dans l'array associée.
+        return itemsByCollectionMap[_name][arrayId];
+        }
 
     ///@notice retourne le nombre de collections créées par l'utilisateur
-    function getNbCollection(address _addr) public view returns(uint) {
+    function getNbCollectionByAddress(address _addr) public view returns(uint) {
         return collectionMap[_addr].length;
     }
- 
-   // function createCollection1155 (string calldata _creator, string calldata _uri, uint _totalSupply, uint _id, uint256 _amount, bytes memory _data /** Ajouter des strings pour les attributs ? et des uint pour les echelles d'aleatoires des attributs ? */) external {
-    //    NFTCollection1155 collection = new NFTCollection1155(_uri); // Ou utiliser create2 en assembly - yul + AJOUTER LES AUTRES PARAMETRES
-     //   NFTCollection1155(collection).mint(msg.sender, _id, _amount, _data ); // EN TRAVAIL
-        // Ajouter ici les attributs
-        // emit NFTCollectionCreated(_creator, address(collection), block.timestamp, _totalSupply);
-    //}
-
     
-
-    }
+}
 
     
