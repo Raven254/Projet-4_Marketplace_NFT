@@ -34,7 +34,6 @@ const Create = ({ contract, addr }) => {
   };
   const SelectedNameCollection = (event) => {
     state.nameCollection = event.target.value;
-    console.log(addr[0]);
   };
   const SelectedSymbole = (event) => {
     state.symbol = event.target.value;

@@ -5,11 +5,10 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "./components/Home/Home";
 import Create from "./components/Create";
-import { Explore } from "./components/Explore/Explore";
 import Profil from "./components/Profil";
+import Explore from "./components/Explore/Explore";
 import Collection from "./components/Collection/Collection";
 import NFT from "./components/NFT/NFT";
-import Upload from "./components/Upload";
 
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
@@ -23,6 +22,7 @@ function App() {
     accounts: null,
     contract: null,
     contractNFTFactory: null,
+    collection: null
   });
   const [contractState, setContractState] = useState({
     owner: "",
@@ -60,15 +60,15 @@ function App() {
         //  let workflowStatus = await instance.methods.workflowStatus().call();
         //  let owner = await instance.methods.owner().call();
         //  setContractState({ owner: owner, workflowStatus: workflowStatus });
-        const collectionN = await instanceNFTFactory.methods
-          .getCollections(deployedNetwork.address)
+        const collectionNFT = await instanceNFTFactory.methods
+          .getCollections(accounts[0])
           .call();
-        console.log(collectionN);
 
         setState({
           web3: web3,
           accounts: accounts,
           contractNFTFactory: instanceNFTFactory,
+          collection: collectionNFT
         });
       } catch (error) {
         alert(
@@ -83,13 +83,30 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/explore" element={<Explore />} />
+        <Route
+          path="/explore"
+          element={
+            <Explore
+              collection={state.collection}
+            />
+          }
+        />
         <Route
           path="/create"
-          element={<Create contract={state.contractNFTFactory} addr={state.accounts} />}
+          element={
+            <Create contract={state.contractNFTFactory} addr={state.accounts} />
+          }
         />
         <Route path="/profil" element={<Profil addr={state.accounts} />} />
-        <Route path="/collection/:id" element={<Collection />} />
+        <Route
+          path="/collection/:id"
+          element={
+            <Collection
+              contract={state.contractNFTFactory}
+              addr={state.accounts}
+            />
+          }
+        />
         <Route path="/collection/:idCollection/NFT/:id" element={<NFT />} />
       </Routes>
       <Footer />
