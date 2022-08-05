@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getWeb3 from "./getWeb3";
+import NFTFactory from "./contracts/NFTFactory.json";
 import { Route, Routes } from "react-router-dom";
 
 import Home from "./components/Home/Home";
@@ -21,6 +22,7 @@ function App() {
     web3: null,
     accounts: null,
     contract: null,
+    contractNFTFactory: null,
   });
   const [contractState, setContractState] = useState({
     owner: "",
@@ -39,6 +41,14 @@ function App() {
         console.log(accounts[0]);
         // Get the contract instance.
         const networkId = await web3.eth.net.getId();
+        console.log(networkId);
+        const deployedNetwork = NFTFactory.networks[networkId];
+        console.log(deployedNetwork);
+        const instanceNFTFactory = new web3.eth.Contract(
+          NFTFactory.abi,
+          deployedNetwork && deployedNetwork.address
+        );
+        console.log(instanceNFTFactory);
         //  const deployedNetwork = VotingContract.networks[networkId];
         //  const instance = new web3.eth.Contract(
         //    VotingContract.abi,
@@ -51,7 +61,11 @@ function App() {
         //  let owner = await instance.methods.owner().call();
         //  setContractState({ owner: owner, workflowStatus: workflowStatus });
 
-        setState({ web3: web3, accounts: accounts });
+        setState({
+          web3: web3,
+          accounts: accounts,
+          contractNFTFactory: instanceNFTFactory,
+        });
       } catch (error) {
         alert(
           `Failed to load web3, accounts, or contract. Check console for details.`
@@ -66,12 +80,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/create" element={<Create />} />
+        <Route
+          path="/create"
+          element={<Create contract={state.contractNFTFactory} />}
+        />
         <Route path="/profil" element={<Profil addr={state.accounts} />} />
         <Route path="/collection/:id" element={<Collection />} />
         <Route path="/collection/:idCollection/NFT/:id" element={<NFT />} />
       </Routes>
-      <Upload />
       <Footer />
     </div>
   );

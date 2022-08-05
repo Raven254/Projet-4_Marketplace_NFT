@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import Dropdown from "./Dropdown";
+const { NFTStorage } = require("nft.storage/dist/bundle.esm.min.js");
 
-const Create = () => {
+//apiKey : récupérer peut être la key dans .en
+const apiKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAwN2I4NjhhMjE2OUE2MjA5OThjODZENmRhYWEwRGRhN0FBNDJhNDEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1OTUzOTM3NTY4MSwibmFtZSI6Ik1hcmtldHBsYWNlTkZUIn0.LqTPGBuDi7TsOcjSTm2ofGCNZju67fsJECn-PE0fEZQ";
+
+const Create = ({ contract }) => {
+  const client = new NFTStorage({ token: apiKey });
+  console.log(client);
   const state = {
     file: null,
     nameCollection: "",
@@ -19,15 +26,40 @@ const Create = () => {
   const handleSelect = (event) => {
     setValue(event.target.value);
   };
-  const fileSelectedHandler = (event) => {
-    let file = event.target.files[0];
-    console.log(event.target.files[0]);
+  const fileSelectedHandlerCollection = (event) => {
+    state.file_collection = event.target.files[0];
+  };
+  const fileSelectedHandlerNFT = (event) => {
+    state.file = event.target.files[0];
+  };
+  const SelectedNameCollection = (event) => {
+    state.nameCollection = event.target.value;
+    console.log(contract);
+  };
+  const SelectedSymbole = (event) => {
+    state.symbol = event.target.value;
   };
   const fileUploadHandler = (event) => {
     console.log(state.file);
-    console.log(state.file_collection);
   };
-  const addCollection = (event) => {};
+  const addCollection = (event) => {
+    uploadIPFS(state.file_collection, state.nameCollection, state.symbol);
+  };
+  const uploadIPFS = async (imageCollection, nameCollection, symbol) => {
+    const cid = await client.storeDirectory([
+      new File([imageCollection], nameCollection),
+    ]);
+    // retourne le tokenURI complet !
+    const uri = "https://" + cid + ".ipfs.nftstorage.link/" + nameCollection;
+    console.log(uri);
+    console.log(contract);
+    const send = await contract.methods.createCollection721(
+      nameCollection,
+      symbol,
+      uri
+    );
+    console.log(send)
+  };
   return (
     <div
       style={{
@@ -38,25 +70,30 @@ const Create = () => {
       }}
     >
       <div className="FormCollectionSection">
-         <h1 style={{ fontSize: "3em" }}>
-          Créez une collection
-        </h1> 
+        <h1 style={{ fontSize: "3em" }}>Créez une collection</h1>
         <label htmlFor="NameCollection">Nom de la collection</label>
         <input
           type="text"
           className="form-control"
           id="NameCollection"
           name="NameCollection"
+          onChange={SelectedNameCollection}
         />
         <label htmlFor="NameCollection">Le symbole</label>
-        <input type="text" className="form-control" id="Symbol" name="Symbol" />
-        <label htmlFor="NameCollection">Inserez une image</label> 
+        <input
+          type="text"
+          className="form-control"
+          id="Symbol"
+          name="Symbol"
+          onChange={SelectedSymbole}
+        />
+        <label htmlFor="NameCollection">Inserez une image</label>
         <input
           type="file"
           className="form-control"
           id="file_collection"
           name="file_collection"
-          onChange={fileSelectedHandler}
+          onChange={fileSelectedHandlerCollection}
         />
         <button className="buttonForm" onClick={addCollection}>
           Ajoutez
@@ -85,7 +122,7 @@ const Create = () => {
           className="form-control"
           id="file"
           name="file"
-          onChange={fileSelectedHandler}
+          onChange={fileSelectedHandlerNFT}
         />
         <button className="buttonForm" onClick={fileUploadHandler}>
           Ajoutez
