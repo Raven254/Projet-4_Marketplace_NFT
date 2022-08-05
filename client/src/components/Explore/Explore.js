@@ -1,17 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Catalog from "./Catog.js";
 
-const Explore = ({ collection }) => {
-  const [Collection, setCollection] = React.useState(collection);
-  // useEffect(() => {
-  //   (async function () {
-  //     console.log(contract);
-  //     const getCollection = await contract.methods
-  //       .getCollections(addr[0])
-  //       .call();
-  //     setCollection(getCollection);
-  //   })();
-  // }, []);
+const Explore = ({ myCollection }) => {
+  console.log(myCollection);
   return (
     <div
       style={{
@@ -32,9 +23,14 @@ const Explore = ({ collection }) => {
         </h2>
       </div>
       <div className="explore__content">
-         {Collection.map((item, index) => (
-          <Catalog key={index} img={item["2"]} name={item["0"]} id={index} />
-        ))} 
+        {myCollection.map((item, index) => (
+          <Catalog
+            key={index}
+            img={item.tokenUri}
+            name={item.name}
+            id={index}
+          />
+        ))}
       </div>
     </div>
   );

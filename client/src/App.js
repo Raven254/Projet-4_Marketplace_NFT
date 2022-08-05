@@ -22,7 +22,7 @@ function App() {
     accounts: null,
     contract: null,
     contractNFTFactory: null,
-    collection: null
+    myCollection: null
   });
   const [contractState, setContractState] = useState({
     owner: "",
@@ -60,15 +60,17 @@ function App() {
         //  let workflowStatus = await instance.methods.workflowStatus().call();
         //  let owner = await instance.methods.owner().call();
         //  setContractState({ owner: owner, workflowStatus: workflowStatus });
-        const collectionNFT = await instanceNFTFactory.methods
+        const myCollectionNFT = await instanceNFTFactory.methods
           .getCollections(accounts[0])
           .call();
+
+        console.log(myCollectionNFT);
 
         setState({
           web3: web3,
           accounts: accounts,
           contractNFTFactory: instanceNFTFactory,
-          collection: collectionNFT
+          myCollection: myCollectionNFT
         });
       } catch (error) {
         alert(
@@ -85,19 +87,24 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route
           path="/explore"
-          element={
-            <Explore
-              collection={state.collection}
-            />
-          }
+          element={<Explore myCollection={state.myCollection} />}
         />
         <Route
           path="/create"
           element={
-            <Create contract={state.contractNFTFactory} addr={state.accounts} />
+            <Create
+              contract={state.contractNFTFactory}
+              addr={state.accounts}
+              myCollection={state.myCollection}
+            />
           }
         />
-        <Route path="/profil" element={<Profil addr={state.accounts} />} />
+        <Route
+          path="/profil"
+          element={
+            <Profil addr={state.accounts} myCollection={state.myCollection} />
+          }
+        />
         <Route
           path="/collection/:id"
           element={

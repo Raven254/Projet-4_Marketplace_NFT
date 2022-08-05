@@ -1,12 +1,12 @@
 import React from "react";
 import getAllCollections from "../fake_data/Collections";
-import CatalogNFT from "./Collection/CatalogNFT";
+import Catalog from "./Explore/Catog";
 
 const profil = {
   address: "0x545rt54et5y545454",
 };
 
-const Profil = ({addr}) => {
+const Profil = ({addr,myCollection}) => {
   const result = getAllCollections().find(({ id }) => id == 1);
   const result_NFT = result.NFT;
   const data = result_NFT.filter((pop) => pop.address == profil.address);
@@ -26,18 +26,15 @@ const Profil = ({addr}) => {
           height: 150,
         }}
       >
-        <h2 style={{ fontSize: "2em", textAlign: "center" }}>
-          Welcome {addr}
-        </h2>
+        <h2 style={{ fontSize: "2em", textAlign: "center" }}>Welcome {addr}</h2>
       </div>
       <div className="explore__content">
-        {data.map((item, index) => (
-          <CatalogNFT
+        {myCollection.map((item, index) => (
+          <Catalog
             key={index}
-            img={item.image}
-            price={item.price}
-            id={item.id}
-            idCollection={"1"}
+            img={item.tokenUri}
+            name={item.name}
+            id={index}
           />
         ))}
       </div>

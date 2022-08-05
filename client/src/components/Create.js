@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Dropdown from "./Dropdown";
 const { NFTStorage } = require("nft.storage/dist/bundle.esm.min.js");
 
@@ -6,7 +7,8 @@ const { NFTStorage } = require("nft.storage/dist/bundle.esm.min.js");
 const apiKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAwN2I4NjhhMjE2OUE2MjA5OThjODZENmRhYWEwRGRhN0FBNDJhNDEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1OTUzOTM3NTY4MSwibmFtZSI6Ik1hcmtldHBsYWNlTkZUIn0.LqTPGBuDi7TsOcjSTm2ofGCNZju67fsJECn-PE0fEZQ";
 
-const Create = ({ contract, addr }) => {
+const Create = ({ contract, addr, myCollection }) => {
+  let navigate = useNavigate();
   const client = new NFTStorage({ token: apiKey });
   console.log(client);
   const state = {
@@ -15,16 +17,12 @@ const Create = ({ contract, addr }) => {
     nameNFT: "",
     symbol: "",
     file_collection: null,
+    key: null,
   };
-  const options = [
-    { label: "Fruit", value: "fruit" },
-    { label: "Vegetable", value: "vegetable" },
-    { label: "Meat", value: "meat" },
-  ];
-  const [value, setValue] = React.useState("");
 
   const handleSelect = (event) => {
-    setValue(event.target.value);
+    state.key = event.target.value;
+    console.log(state.key);
   };
   const fileSelectedHandlerCollection = (event) => {
     state.file_collection = event.target.files[0];
@@ -39,12 +37,20 @@ const Create = ({ contract, addr }) => {
     state.symbol = event.target.value;
   };
   const fileUploadHandler = (event) => {
-    console.log(state.file);
+    uploadIPFSNFT(state.key, state.file);
   };
   const addCollection = (event) => {
-    uploadIPFS(state.file_collection, state.nameCollection, state.symbol);
+    uploadIPFSCollection(
+      state.file_collection,
+      state.nameCollection,
+      state.symbol
+    );
   };
-  const uploadIPFS = async (imageCollection, nameCollection, symbol) => {
+  const uploadIPFSCollection = async (
+    imageCollection,
+    nameCollection,
+    symbol
+  ) => {
     const cid = await client.storeDirectory([
       new File([imageCollection], nameCollection),
     ]);
@@ -54,7 +60,24 @@ const Create = ({ contract, addr }) => {
     console.log(contract);
     const send = await contract.methods
       .createCollection721(nameCollection, symbol, uri)
-      .send({ from: addr[0] });
+      .send({ from: addr[0] })
+      .then((result) => navigate("/"))
+      .catch((error) => console.log(error));
+  };
+  const uploadIPFSNFT = async (key, imageNFT) => {
+    const cid = await client.storeDirectory([
+      new File([imageNFT], myCollection[key].name),
+    ]);
+    // retourne le tokenURI complet !
+    const uri =
+      "https://" + cid + ".ipfs.nftstorage.link/" + myCollection[key].name;
+    console.log(uri);
+    console.log(contract);
+    const send = await contract.methods
+      .mintExistingCollection721(key, uri)
+      .send({ from: addr[0] })
+      .then((result) => navigate("/"))
+      .catch((error) => console.log(error));
   };
   return (
     <div
@@ -101,16 +124,9 @@ const Create = ({ contract, addr }) => {
         </h1>
         <Dropdown
           label="Choisi la collection :"
-          options={options}
-          value={value}
+          options={myCollection}
+          value={state.key}
           onChange={handleSelect}
-        />
-        <label htmlFor="NameCollection">Nom du NFT</label>
-        <input
-          type="text"
-          className="form-control"
-          id="NameCollection"
-          name="NameCollection"
         />
         <label htmlFor="NameCollection">Inserez une image</label>
         <input

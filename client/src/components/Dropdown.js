@@ -1,5 +1,4 @@
 import React from "react";
-import { MdSocialDistance } from "react-icons/md";
 
 const Dropdown = ({ label, value, options, onChange }) => {
   return (
@@ -15,8 +14,8 @@ const Dropdown = ({ label, value, options, onChange }) => {
         value={value}
         onChange={onChange}
       >
-        {options.map((option) => (
-          <option value={option.value}>{option.label}</option>
+        {options.map((option, index) => (
+          <option value={index}>{option.name}</option>
         ))}
       </select>
     </div>
