@@ -5,18 +5,30 @@ const Upload = () => {
   const client = new NFTStorage({ token: apiKey })
   console.log(client);
 
-  // Fonction d'upload sur IPFS en prenant l'image de l'utilisateur.
+  // Fonction d'upload sur IPFS en prenant l'image de l'utilisateur pour créer une collection.
   const uploadIPFS = async () => {
-  const image = document.getElementById("imageNFT").files;
+  const imageFiles = document.getElementById("imageNFT").files;
+  const image = imageFiles[0];
+  const name = "NFT"; // On peut mettre le nom de la collection OU le counter du NFT mais complexe...
+  //const name = document.getElementById("name").value;
+
+  console.log(imageFiles);
   console.log(image);
   const cid = await client.storeDirectory([
-    new File([image], "NFT")
+    new File([image], name)
     ])
-    console.log(cid); // retourne un CID de l'image qu'on utilisera pour notre tokenURI.
+
+  console.log(cid); 
+  
+  // retourne le tokenURI complet !
+  const uri = "https://"+cid+".ipfs.nftstorage.link/"+name;
+  console.log(uri);
   }
   
   return (
     <>
+        <input type="text" id="name" placeholder="Ajoutez un nom à votre collection."/>
+        <br/>
         <input type="file" id="imageNFT" placeholder="Ajoutez votre image." accept="image/png, image/jpeg"/>
         <br/>
         <button onClick={ () => {uploadIPFS()}}>Mint</button>
