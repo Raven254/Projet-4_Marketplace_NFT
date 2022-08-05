@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import NFTFactory from "./contracts/NFTFactory.json";
 import getWeb3 from "./getWeb3";
 import {Route, Routes} from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import { Explore } from "./components/Explore/Explore";
 import Profil from "./components/Profil";
 import Collection from "./components/Collection/Collection";
 import NFT from "./components/NFT/NFT";
+import Upload from "./components/Upload";
 
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
@@ -27,9 +28,9 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = SimpleStorageContract.networks[networkId];
+      const deployedNetwork = NFTFactory.networks[networkId];
       const instance = new web3.eth.Contract(
-        SimpleStorageContract.abi,
+        NFTFactory.abi,
         deployedNetwork && deployedNetwork.address,
       );
 
@@ -88,6 +89,7 @@ class App extends Component {
           <Route path="/collection/:id" element={<Collection />} />
           <Route path="/collection/:idCollection/NFT/:id" element={<NFT />} />
         </Routes>
+        <Upload />
         <Footer />
       </div>
     );
