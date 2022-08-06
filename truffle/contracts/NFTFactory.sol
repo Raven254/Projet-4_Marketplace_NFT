@@ -21,7 +21,7 @@ contract NFTFactory is ReentrancyGuard {
     ///@param _name Nom de la collection NFT à créer.
     ///@param _symbol Symbole de la collection NFT à créer.
     ///@param _uri Uri du NFT à mint avec la nouvelle collection.
-    function createCollection(string calldata _name, string calldata _symbol, string calldata _uri, address _marketplaceContract) external returns(NFTCollection721) {       
+    function createCollection(string calldata _name, string calldata _symbol, string calldata _uri) external returns(NFTCollection721) {       
         require(keccak256(abi.encodePacked(_name)) != keccak256(abi.encodePacked("")), unicode"Vous devez donner un nom à votre collection");
         require(bytes(_uri).length > 0, "Vous devez fournir une image");
         require(nameExistsMap[ _name] != true, unicode'Ce nom existe déjà.');
