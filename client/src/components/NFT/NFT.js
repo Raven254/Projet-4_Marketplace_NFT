@@ -1,21 +1,27 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getAllCollections from "../../fake_data/Collections";
 
-const profil = {
-  address: "0x545rt54et5y545454",
-};
-
-function NFT() {
+function NFT({ contract, addr }) {
   const state = {
     Price: "",
   };
   const params = useParams();
-  const collection = getAllCollections().find(
-    ({ id }) => id == params.idCollection
-  );
-  const collection_NFT = collection.NFT;
-  const NFT = collection_NFT.find(({ id }) => id == params.id);
+  const [NFT, setNFT] = useState([]);
+  // const collection = getAllCollections().find(
+  //   ({ id }) => id == params.idCollection
+  // );
+  // const collection_NFT = collection.NFT;
+  // const NFT = collection_NFT.find(({ id }) => id == params.id);
+  useEffect(() => {
+    (async () => {
+      const itemByCollection = await contract.methods
+        .getItemByCollections(params.nameCollection, params.nftId)
+        .call();
+      setNFT(itemByCollection);
+    })();
+  }, []);
 
   const addPrice = (event) => {
     console.log(event.target.value);
@@ -43,11 +49,11 @@ function NFT() {
             textAlign: "center",
           }}
         >
-          {NFT.title}
+          {params.nameCollection}
         </h2>
       </div>
       <div className="NFT_section">
-        <img src={NFT.image} className="img_NFT" alt="" />
+        {/* <img src={state.NFT.image} className="img_NFT" alt="" /> */}
         <div className="NFT_information">
           <h3
             style={{
@@ -57,16 +63,16 @@ function NFT() {
           >
             Informations :
           </h3>
-          {NFT.address == profil.address ? (
+          {NFT.seller == addr ? (
             <div>
               <p> Ceci est un NFT qui vous appartient </p>
             </div>
           ) : (
             <div>
-              <p> Le NFT appartient à {NFT.address} </p>
+              <p> Le NFT appartient à {NFT.seller} </p>
             </div>
           )}
-          {NFT.price == null && NFT.address == profil.address ? (
+          {NFT.price == "0" && NFT.seller == addr ? (
             <div
               style={{
                 display: "flex",
@@ -88,14 +94,14 @@ function NFT() {
             </div>
           ) : (
             <div>
-              <p> Ce NFT est à vendre au prix de {NFT.price} ETH</p>
+              <p> Ce NFT est à {NFT.price} ETH</p>
             </div>
           )}
-          {NFT.sell == true && NFT.address != profil.address ? (
+          {NFT.selling == true && NFT.seller != addr ? (
             <div>
               <button className="active">Achetez </button>
             </div>
-          ) : NFT.address == profil.address ? (
+          ) : NFT.seller == addr ? (
             <div></div>
           ) : (
             <div>

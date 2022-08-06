@@ -21,7 +21,7 @@ const CatalogNFT = (props) => {
       layout
       className="catalog"
     >
-      <Link to={`/Collection/${props.idCollection}/NFT/${props.id}`}>
+      <Link to={`/Collection/${props.nameCollection}/NFT/${props.nftId}`}>
         <img src={props.img} className="img" alt="" />
       </Link>
       <div className="catalog__btn">
@@ -37,7 +37,7 @@ const CatalogNFT = (props) => {
           </Button>
         ) : (
           <Button
-            to="/Create/"
+            to={`/Collection/${props.nameCollection}/NFT/${props.nftId}`}
             onMouseEnter={onHover}
             onMouseLeave={onHover}
             primary="true"
@@ -52,10 +52,10 @@ const CatalogNFT = (props) => {
 };
 
 CatalogNFT.propTypes = {
-  id: PropTypes.number.isRequired,
-  idCollection: PropTypes.string.isRequired,
-  img: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
+  nftId: PropTypes.string.isRequired,
+  nameCollection: PropTypes.string.isRequired,
+  // img: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired,
 };
 
 export default CatalogNFT;

@@ -1,25 +1,27 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import getAllCollections from "../../fake_data/Collections";
 import CatalogNFT from "./CatalogNFT";
 import Filter from "./Filter";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Collection = () => {
+const Collection = ({ contract,addr }) => {
   const params = useParams();
-  const result = getAllCollections().find(({ id }) => id == params.id);
-  const [popular, setPopular] = useState(result.NFT);
-  const [filtered, setFiltered] = useState(result.NFT);
+  // const result = getAllCollections().find(({ id }) => id == params.id);
+  const [popular, setPopular] = useState([]);
+  const [filtered, setFiltered] = useState([]);
   const [activeSell, setActiveSell] = useState("All");
-  // useEffect(() =>{
-  //     fetchPopular();
-  //  });
-  // const fetchPopular = () =>{
-  // const result =  getAllCollections().find( ({ id }) => id == params.id );
-
-  console.log(filtered);
-  console.log(activeSell);
+  useEffect(() => {
+    (async () => {
+      const allItemsByCollection = await contract.methods
+        .getAllItemsByCollections(params.nameCollection)
+        .call();
+      console.log(allItemsByCollection);
+      setPopular(allItemsByCollection);
+      setFiltered(allItemsByCollection);
+    })();
+  }, []);
   return (
     <div
       style={{
@@ -35,13 +37,14 @@ const Collection = () => {
           height: 150,
         }}
       >
-        <h2 style={{ fontSize: "2em", textAlign: "center" }}>{result.title}</h2>
+        <h2 style={{ fontSize: "2em", textAlign: "center" }}>{params.name}</h2>
       </div>
       <Filter
         popular={popular}
         setFiltered={setFiltered}
         activeSell={activeSell}
         setActiveSell={setActiveSell}
+        addr={addr}
       />
       <motion.div
         animate={{ opacity: 1 }}
@@ -56,8 +59,8 @@ const Collection = () => {
               key={index}
               img={item.image}
               price={item.price}
-              id={item.id}
-              idCollection={params.id}
+              nftId={item.nftId}
+              nameCollection={params.nameCollection}
             />
           ))}
         </AnimatePresence>

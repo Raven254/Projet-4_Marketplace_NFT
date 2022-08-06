@@ -1,8 +1,8 @@
 import React from "react";
 import Catalog from "./Catog.js";
 
-const Explore = ({ myCollection }) => {
-  console.log(myCollection);
+const Explore = ({ allCollection }) => {
+  console.log(allCollection);
   return (
     <div
       style={{
@@ -23,7 +23,7 @@ const Explore = ({ myCollection }) => {
         </h2>
       </div>
       <div className="explore__content">
-        {myCollection.map((item, index) => (
+        {allCollection.map((item, index) => (
           <Catalog
             key={index}
             img={item.tokenUri}

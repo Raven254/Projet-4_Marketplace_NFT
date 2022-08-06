@@ -22,7 +22,8 @@ function App() {
     accounts: null,
     contract: null,
     contractMarketplaceNFT: null,
-    myCollection: null
+    myCollection: null,
+    allCollection: null,
   });
   const [contractState, setContractState] = useState({
     owner: "",
@@ -49,20 +50,14 @@ function App() {
           deployedNetwork && deployedNetwork.address
         );
         console.log(instanceMarketplaceNFT);
-        //  const deployedNetwork = VotingContract.networks[networkId];
-        //  const instance = new web3.eth.Contract(
-        //    VotingContract.abi,
-        //    deployedNetwork && deployedNetwork.address
-        //  );
-
-        //  console.log(instance.methods);
-
-        //  let workflowStatus = await instance.methods.workflowStatus().call();
-        //  let owner = await instance.methods.owner().call();
-        //  setContractState({ owner: owner, workflowStatus: workflowStatus });
         const myCollectionNFT = await instanceMarketplaceNFT.methods
-          .getCollectionsByAddress (accounts[0])
+          .getCollectionsByAddress(accounts[0])
           .call();
+
+        const allCollection = await instanceMarketplaceNFT.methods
+          .getAllCollections()
+          .call();
+        
 
         console.log(myCollectionNFT);
 
@@ -70,7 +65,8 @@ function App() {
           web3: web3,
           accounts: accounts,
           contractMarketplaceNFT: instanceMarketplaceNFT,
-          myCollection: myCollectionNFT
+          myCollection: myCollectionNFT,
+          allCollection: allCollection,
         });
       } catch (error) {
         alert(
@@ -87,7 +83,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route
           path="/explore"
-          element={<Explore myCollection={state.myCollection} />}
+          element={<Explore allCollection={state.allCollection} />}
         />
         <Route
           path="/create"
@@ -106,7 +102,7 @@ function App() {
           }
         />
         <Route
-          path="/collection/:id"
+          path="/collection/:nameCollection"
           element={
             <Collection
               contract={state.contractMarketplaceNFT}
@@ -114,7 +110,15 @@ function App() {
             />
           }
         />
-        <Route path="/collection/:idCollection/NFT/:id" element={<NFT />} />
+        <Route
+          path="/collection/:nameCollection/NFT/:nftId"
+          element={
+            <NFT
+              contract={state.contractMarketplaceNFT}
+              addr={state.accounts}
+            />
+          }
+        />
       </Routes>
       <Footer />
     </div>

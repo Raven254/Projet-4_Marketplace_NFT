@@ -4,44 +4,42 @@ const profil = {
   address: "0x545rt54et5y545454",
 };
 
-
-function Filter({ popular, setActiveSell, setFiltered, activeSell }) {
+function Filter({ popular, setActiveSell, setFiltered, activeSell, addr }) {
   useEffect(() => {
     if (activeSell === "All") {
       setFiltered(popular);
+      console.log(popular);
       return;
     }
     if (activeSell === "Sell") {
-      const filteredTrue = popular.filter((pop) => pop.sell == true);
+      const filteredTrue = popular.filter((pop) => pop.selling == true);
       setFiltered(filteredTrue);
       return;
     }
     if (activeSell === "No sell") {
-      const filteredFalse = popular.filter((pop) => pop.sell == false);
+      const filteredFalse = popular.filter((pop) => pop.selling == false);
+      console.log(filteredFalse);
       setFiltered(filteredFalse);
+      console.log(Number(popular[0].price));
       return;
     }
     if (activeSell === "Croissant") {
       const filteredCroissant = popular.sort((a, b) =>
-        a.price > b.price ? 1 : -1
+        Number(a.price) > Number(b.price) ? 1 : -1
       );
       setFiltered(filteredCroissant);
       return;
     }
     if (activeSell === "Decroissant") {
-      const filteredDecroissant = popular.sort((a, b) => b.price - a.price);
-      setFiltered(filteredDecroissant);
-      console.log(filteredDecroissant);
-      return;
-    }
-    if (activeSell === "Decroissant") {
-      const filteredDecroissant = popular.sort((a, b) => b.price - a.price);
+      const filteredDecroissant = popular.sort(
+        (a, b) => Number(b.price) - Number(a.price)
+      );
       setFiltered(filteredDecroissant);
       console.log(filteredDecroissant);
       return;
     }
     if (activeSell === "Mine") {
-      const filteredMine= popular.filter((pop) => pop.address == profil.address);
+      const filteredMine = popular.filter((pop) => pop.seller == addr[0]);
       setFiltered(filteredMine);
       console.log(filteredMine);
       return;
@@ -67,7 +65,7 @@ function Filter({ popular, setActiveSell, setFiltered, activeSell }) {
       >
         Vendu
       </button>
-      <button
+      {/* <button
         className={activeSell == "Croissant" ? "active" : ""}
         onClick={() => setActiveSell("Croissant")}
       >
@@ -78,7 +76,7 @@ function Filter({ popular, setActiveSell, setFiltered, activeSell }) {
         onClick={() => setActiveSell("Decroissant")}
       >
         Prix décroissant
-      </button>
+      </button> */}
       <button
         className={activeSell == "Mine" ? "active" : ""}
         onClick={() => setActiveSell("Mine")}
