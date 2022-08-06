@@ -5,11 +5,15 @@ pragma solidity 0.8.14;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
+import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "./NFTFactory.sol";
 
 contract MarketplaceNFT is ReentrancyGuard {
+    
+    // ::::::::::::: INITIALISATION DU CONTRAT ::::::::::::: //
+    
     // Déclaration de NFTFactory
     NFTFactory factory = new NFTFactory();
 
@@ -207,8 +211,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         
         int totalPrice = _price*(1000+feePercent)/1000;
 
-        //nft.setApprovalForAll(address(this), true);
-        nft.transferFrom(msg.sender, address(this), _nftId);
+        nft.safeTransferFrom(msg.sender, address(this), _nftId);
 
         itemsByCollectionMap[_name][_nftId-1].price = _price;
         itemsByCollectionMap[_name][_nftId-1].totalPrice = totalPrice;
@@ -232,7 +235,7 @@ contract MarketplaceNFT is ReentrancyGuard {
 
         IERC721 nft = itemInstance.nftInstance;
 
-        nft.transferFrom(marketplaceContract, msg.sender, _nftId);
+        nft.transferFrom(address(this), msg.sender, _nftId);
         itemsByCollectionMap[_name][_nftId-1].price = 0;
         itemsByCollectionMap[_name][_nftId-1].totalPrice = 0;
         itemsByCollectionMap[_name][_nftId-1].selling = false;
@@ -244,7 +247,6 @@ contract MarketplaceNFT is ReentrancyGuard {
         );
     }
 
-    
     ///@dev Fonction permettant à l'utilisateur d'acheter un NFT sur la plateforme.
     ///@param _name Nom de la collection NFT.
     ///@param _nftId ID du NFT.
@@ -257,18 +259,16 @@ contract MarketplaceNFT is ReentrancyGuard {
         int totalPrice = itemInstance.totalPrice;
 
         require(int(msg.value) >= totalPrice, "Veuillez envoyer le montant exact.");
-        require(msg.value > 0, "Veuillez envoyer le montant exact.");
         require(itemInstance.selling == true, unicode"Ce NFT n'est pas en vente ou a déjà été vendu");
  
-        address owner = msg.sender;
         IERC721 nft = itemInstance.nftInstance;
-        nft.transferFrom(owner, marketplaceContract, _nftId);
-        nft.transferFrom(marketplaceContract, owner, _nftId);
+        nft.transferFrom(marketplaceContract, msg.sender, _nftId);
 
         itemInstance.seller.transfer(uint(itemInstance.price));
         //itemInstance.nftInstance.safeTransferFrom(address(this), msg.sender, itemInstance.nftId);
 
         itemsByCollectionMap[_name][_nftId-1].price = 0;
+        itemsByCollectionMap[_name][_nftId-1].totalPrice = 0;
         itemsByCollectionMap[_name][_nftId-1].seller = payable(msg.sender);
         itemsByCollectionMap[_name][_nftId-1].selling = false;
 
@@ -281,18 +281,8 @@ contract MarketplaceNFT is ReentrancyGuard {
         );
     }
 
-
-    ///@notice Calcule le total du prix à payer avec les fees.
-    ///@param _name Nom de la collection NFT.
-    ///@param _nftId ID du NFT.
-    function getTotalPrice(string memory _name, uint _nftId) view public returns(int) {
-        uint itemIdInArray = _nftId-1;
-        int totalPrice = itemsByCollectionMap[_name][itemIdInArray].price*(1000+feePercent/1000);
-        return(totalPrice);
-    }
-
     ///@notice Distribue un montant choisi parmi les fees récoltés en part égale entre les owners.
-    ///@param _feeAmount Nom de la collection NFT
+    ///@param _feeAmount Nom de la collection NFT.
     function feeDistribution(uint _feeAmount) external onlyCMO {
         uint feeAmountInWei = _feeAmount*10e18;
         require(feeAmountInWei <= address(this).balance, "Il n'y a pas assez de fonds sur le contrat.");
@@ -304,9 +294,22 @@ contract MarketplaceNFT is ReentrancyGuard {
         emit FeeDistribution(_feeAmount, partTotale, partEgale, address(this).balance);
     }
 
-    ///@dev Fonction permettant au vendeur de créer une enchère
+    ///@notice Fonction permettant au vendeur de créer une enchère
     ///@param _id id du NFT dont on dépose le prix
     ///@param _startPrice prix de départ du NFT
     ///@param _time temps total d'attente de l'enchère.
+    function auction(uint _id, uint _startPrice, uint _time) public {
+        // WIP
+    }
+
+    ///@notice ERC721 Receiver.
+    ///@param operator Adresse de la marketplace.
+    ///@param from Adresse du propriétaire du NFT.
+    ///@param tokenId ID du token.
+    ///@param data Data ajoutée en plus.
+    function onERC721Received( address operator, address from, uint256 tokenId, bytes calldata data ) public pure returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
+    }
+    
     
 }   
