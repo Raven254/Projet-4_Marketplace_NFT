@@ -144,7 +144,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _symbol Symbole de la collection NFT à créer.
     ///@param _uri Uri du NFT à mint avec la nouvelle collection.
     function createCollection721(string calldata _name, string calldata _symbol, string calldata _uri) external {       
-        require(keccak256(abi.encodePacked(_name)) != keccak256(abi.encodePacked("")), unicode"Vous devez donner un nom à votre collection");
+        require(keccak256(abi.encodePacked(_name)) != keccak256(abi.encodePacked("")), unicode"Vous devez donner un nom à votre collection.");
+        require(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("")), unicode"Vous devez donner un symbole à votre collection.");
         require(bytes(_uri).length > 0, "Vous devez fournir une image");
         
         NFTCollection721 collection = factory.createCollection(_name, _symbol, _uri);
@@ -224,6 +225,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         IERC721 nft = itemInstance.nftInstance;
 
         nft.safeTransferFrom(address(this), msg.sender, _nftId);
+        itemsByCollectionMap[_name][_nftId-1].price = 0;
         itemsByCollectionMap[_name][_nftId-1].selling = false;
 
         emit StopSelling(
