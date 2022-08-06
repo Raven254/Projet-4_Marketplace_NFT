@@ -4,8 +4,8 @@ pragma solidity ^0.8.14;
 // Importer VRF de Chainlink
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
+import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTCollection721 is ERC721, ERC721URIStorage, Ownable {
     constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {}
