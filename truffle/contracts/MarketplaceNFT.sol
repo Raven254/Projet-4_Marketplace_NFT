@@ -18,7 +18,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     address payable public Olivier;
     address payable public Marwane;
     
-    uint public feePercent; // Le pourcentage de frais
+    int public feePercent; // Le pourcentage de frais
 
     struct collection721 {
         string name;
@@ -32,7 +32,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     struct NFT721 {
         uint nftId;
         IERC721 nftInstance; // instance du contrat NFT
-        uint price; // pour le price, il faut faire attention à convertir en wei avec web3js, et reconvertir en ether dans l'affichage
+        string tokenURI;
+        int price; // pour le price, il faut faire attention à convertir en wei avec web3js, et reconvertir en ether dans l'affichage
         address payable seller;
         bool selling;
     }
@@ -63,7 +64,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     event Offered (
         uint _nftId,
         address indexed _contract, 
-        uint _price,
+        int _price,
         address indexed _seller
     ); // indexed permet d'utiliser un filtre en cherchant dans les events
 
@@ -78,7 +79,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     event Bought (
         uint _nftId,
         address indexed _contract, 
-        uint _price,
+        int _price,
         address indexed _seller,
         address indexed _buyer
     );
@@ -93,7 +94,7 @@ contract MarketplaceNFT is ReentrancyGuard {
 
     // ::::::::::::: CONSTRUCTOR ET MODIFIERS ::::::::::::: //
 
-    constructor( uint _feePercent, address _clement, address _olivier, address _marwane){
+    constructor( int _feePercent, address _clement, address _olivier, address _marwane){
         feePercent = _feePercent;
         Clement = payable(_clement);
         Olivier = payable(_olivier);
@@ -148,12 +149,12 @@ contract MarketplaceNFT is ReentrancyGuard {
         
         NFTCollection721 collection = factory.createCollection(_name, _symbol, _uri);
         
-        uint256 _id = collection.tokenIds();
+        uint _id = collection.tokenIds();
         collection.safeMint(msg.sender, _id, _uri );
         
         allNFTCollections.push(collection721(_name, _symbol, _uri, address(collection), collection.tokenIds(), true));
         collectionMap[msg.sender].push(collection721(_name, _symbol, _uri, address(collection), collection.tokenIds(), true));
-        itemsByCollectionMap[_name].push(NFT721(collection.tokenIds(), IERC721(collection), 0, payable(msg.sender), false));
+        itemsByCollectionMap[_name].push(NFT721(collection.tokenIds(), IERC721(collection), _uri, 0, payable(msg.sender), false));
 
         uint collectionMapArrayKey = collectionMap[msg.sender].length-1;
 
@@ -176,7 +177,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         string memory name = collectionMap[msg.sender][_key].name;
 
         collectionMap[msg.sender][_key].totalSupply = collection.tokenIds();
-        itemsByCollectionMap[name].push(NFT721(collection.tokenIds(), IERC721(collection), 0, payable(msg.sender), false));
+        itemsByCollectionMap[name].push(NFT721(collection.tokenIds(), IERC721(collection), _uri, 0, payable(msg.sender), false));
 
         emit NFT721Created(msg.sender, collectionStruct.name, collectionStruct.symbol, address(collection), _uri, collection.tokenIds(), _key);
     }
@@ -189,8 +190,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _name Nom de la collection NFT.
     ///@param _nftId ID du NFT que l'on met en vente.
     ///@param _price Prix du NFT.
-    function sellNFT(string calldata _name, uint _nftId, uint _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
-        uint priceInWei = _price * 10e18;
+    function sellNFT(string calldata _name, uint _nftId, int _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
+        int priceInWei = _price * 10e18;
         require(priceInWei >= 0, unicode"Vous devez paramétrer un prix positif ou nul.");
         require(_nftId > 0, unicode"L'Id de votre NFT doit être supérieur à 0.");
         NFT721 memory itemInstance = getItemByCollections(_name, _nftId);
@@ -242,14 +243,14 @@ contract MarketplaceNFT is ReentrancyGuard {
         require(keccak256(abi.encodePacked(_name)) != keccak256(abi.encodePacked("")), unicode"Veuillez entrer un nom de collection.");
         NFT721 memory itemInstance = getItemByCollections(_name, _nftId); // instanciation du NFT dont on souhaite arrêter la vente
         
-        uint totalPrice = getTotalPrice(_name, _nftId);
-        uint nftPrice = itemInstance.price;
+        int totalPrice = getTotalPrice(_name, _nftId);
+        int nftPrice = itemInstance.price;
         address seller = itemInstance.seller;
 
-        require(msg.value == totalPrice, "Veuillez envoyer le montant exact.");
+        require(msg.value > 0 && int(msg.value) == totalPrice, "Veuillez envoyer le montant exact.");
         require(itemInstance.selling == true, unicode"Ce NFT n'est pas en vente ou a déjà été vendu");
         
-        itemInstance.seller.transfer(itemInstance.price);
+        itemInstance.seller.transfer(uint(itemInstance.price));
         itemInstance.nftInstance.safeTransferFrom(address(this), msg.sender, itemInstance.nftId);
 
         itemsByCollectionMap[_name][_nftId-1].price = 0;
@@ -268,9 +269,9 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@notice Calcule le total du prix à payer avec les fees.
     ///@param _name Nom de la collection NFT.
     ///@param _nftId ID du NFT.
-    function getTotalPrice(string memory _name, uint _nftId) view public returns(uint) {
+    function getTotalPrice(string memory _name, uint _nftId) view public returns(int) {
         uint itemIdInArray = _nftId-1;
-        uint totalPrice = itemsByCollectionMap[_name][itemIdInArray].price*(1000+feePercent/1000);
+        int totalPrice = itemsByCollectionMap[_name][itemIdInArray].price*(1000+feePercent/1000);
         return(totalPrice);
     }
 
