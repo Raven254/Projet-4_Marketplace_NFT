@@ -28,7 +28,7 @@ contract NFTFactory is ReentrancyGuard {
         require(symbolExistsdMap[ _symbol] != true, unicode'Ce symbole existe déjà.');        
         require(uriExistsdMap[ _uri] != true, unicode'Cet URI existe déjà.');
         
-        NFTCollection721 collection = new NFTCollection721(_name, _symbol, _marketplaceContract); // Ou utiliser create2
+        NFTCollection721 collection = new NFTCollection721(_name, _symbol); // Ou utiliser create2
 
         collection.transferOwnership(msg.sender);
         nameExistsMap[ _name] = true;
