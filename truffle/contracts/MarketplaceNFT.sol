@@ -190,7 +190,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _nftId ID du NFT que l'on met en vente.
     ///@param _price Prix du NFT.
     function createOffer(string calldata _name, uint _nftId, uint _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
-        require(_price >= 0, unicode"Vous devez paramétrer un prix positif ou nul.");
+        uint priceInWei = _price * 10e18;
+        require(priceInWei >= 0, unicode"Vous devez paramétrer un prix positif ou nul.");
         require(_nftId > 0, unicode"L'Id de votre NFT doit être supérieur à 0.");
         NFT721 memory itemInstance = getItemByCollections(_name, _nftId);
         require(itemInstance.selling == false, unicode"Le NFT est déjà en vente.");
@@ -200,7 +201,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         nft.setApprovalForAll(address(this), true);
         nft.safeTransferFrom(msg.sender, address(this), _nftId);
         
-        itemsByCollectionMap[_name][_nftId-1].price = _price;
+        itemsByCollectionMap[_name][_nftId-1].price = priceInWei;
         itemsByCollectionMap[_name][_nftId-1].selling = true;
 
         emit Offered(
@@ -276,7 +277,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@notice Distribue un montant choisi parmi les fees récoltés en part égale entre les owners.
     ///@param _feeAmount Nom de la collection NFT
     function feeDistribution(uint _feeAmount) external onlyCMO {
-        require(_feeAmount <= address(this).balance, "Il n'y a pas assez de fonds sur le contrat.");
+        uint feeAmountInWei = _feeAmount*10e18;
+        require(feeAmountInWei <= address(this).balance, "Il n'y a pas assez de fonds sur le contrat.");
         uint partEgale = 33*_feeAmount/100; // Améliorer : pour un _feeAmount de 30, la partEgale est de 9.9, et donc de 9 (arrondis à l'inf). To Wei à faire ici
         Clement.transfer(partEgale);
         Olivier.transfer(partEgale);
