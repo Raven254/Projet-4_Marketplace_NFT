@@ -32,6 +32,7 @@ function NFT({ contract, addr, web3 }) {
     // console.log(state.Price);
     // console.log(NFT.nftInstance);
     // console.log(contract._address);
+    const instanceERC721 = new web3.eth.Contract(ERC721.abi, NFT.nftInstance);
     sellNFT(params.nameCollection, NFT.nftId, state.Price);
   };
   const buy = (event) => {
@@ -49,7 +50,7 @@ function NFT({ contract, addr, web3 }) {
     const approve = await instanceERC721.methods
       .setApprovalForAll(contract._address, true)
       .send({ from: addr[0] });
-    console.log(approve);
+    console.log(JSON.stringify(approve));
     console.log(price);
     const send = await contract.methods
       .purchaseNFT(nameCollection, nftId)
@@ -63,7 +64,7 @@ function NFT({ contract, addr, web3 }) {
     const approve = await instanceERC721.methods
       .setApprovalForAll(contract._address, true)
       .send({ from: addr[0] });
-    console.log(approve);
+    console.log(JSON.stringify(approve));
     const send = await contract.methods
       .sellNFT(nameCollection, nftId, price)
       .send({ from: addr[0] })
