@@ -12,61 +12,46 @@ contract("MarketplaceNFT", accounts => {
     describe("Test de NFTFactory.", function() {
         
         context("Test de createCollection721", function() {
-            before(async() => {
+            beforeEach(async() => {
                 MarketplaceNFTInstance = await MarketplaceNFT.new({from: owner});
             });
 
             // TEST DES REQUIRE
             it("Ajout d'un '_name' vide, test du require.", async() => {
-                const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-                expect(new BN(stateData)).to.be.bignumber.equal(new BN(0));
+                await expectRevert(MarketplaceNFTInstance.createCollection721("", "NFT", "https:\/\/pageweb.com\/", {from: owner}), "Vous devez donner un nom à votre collection.");
             });
 
             it("Ajout d'un '_symbol' vide, test du require.", async() => {
-              const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData)).to.be.bignumber.equal(new BN(0));
+                await expectRevert(MarketplaceNFTInstance.createCollection721("NFT", "", "https:\/\/pageweb.com\/", {from: owner}), "Vous devez donner un symbole à votre collection.");
             });
 
             it("Ajout d'un '_uri' vide, test du require.", async() => {
-                await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-                const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-                expect(new BN(stateData)).to.be.bignumber.equal(new BN(1));
+                await expectRevert(MarketplaceNFTInstance.createCollection721("NFT", "NFT", "", {from: owner}), "Vous devez fournir une image.");
             });
-
+ 
             // TEST DES STOCKAGE DE DONNEES
             it("Test allNFTCollections.", async() => {
-              await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-              const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData)).to.be.bignumber.equal(new BN(1));
+              //Insérer ici
             });
 
             it("Test collectionMap.", async() => {
-              await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-              const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData)).to.be.bignumber.equal(new BN(1));
+              //Insérer ici
             });
 
             it("Test itemsByCollectionMap.", async() => {
-              await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-              const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData)).to.be.bignumber.equal(new BN(1));
+              //Insérer ici
             });
 
             // TEST DES EVENTS
             it("Test NFTCollection721Created.", async() => {
-              await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-              const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData)).to.be.bignumber.equal(new BN(1));
+              //Insérer ici
             });
 
             it("Test NFT721Created.", async() => {
-              await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-              const stateData = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData)).to.be.bignumber.equal(new BN(1));
+              //Insérer ici
             });
           });
-
-// ------------------------------------- SUITE A TRAVAILLER ----------------------------------------------
+ 
         context("Test de mintExistingCollection721.", function() {
             before(async() => {
               MarketplaceNFTInstance = await MarketplaceNFT.new({from: owner});
@@ -74,53 +59,42 @@ contract("MarketplaceNFT", accounts => {
 
             // TEST DES REQUIRE
             it("L'event du passage à ProposalsRegistrationStarted fonctionne", async() => {
-                const stateData1 = await MarketplaceNFTInstance.workflowStatus.call();
-                expect(new BN(stateData1)).to.be.bignumber.equal(new BN(0));
-
-                const stateData2 = await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-                expectEvent(stateData2, 'WorkflowStatusChange', {previousStatus: new BN(0) , newStatus: new BN(1)} );
+              //Insérer ici
             });
 
             it("L'event du passage à ProposalsRegistrationEnded fonctionne", async() => {
-                const stateData2 = await MarketplaceNFTInstance.endProposalsRegistering({from: owner});
-                expectEvent(stateData2, 'WorkflowStatusChange', {previousStatus: new BN(1) , newStatus: new BN(2)} );
+              //Insérer ici
             });
 
             // TEST DES STOCKAGE DE DONNEES
             it("L'event du passage à ProposalsRegistrationStarted fonctionne", async() => {
-              const stateData1 = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData1)).to.be.bignumber.equal(new BN(0));
-
-              const stateData2 = await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-              expectEvent(stateData2, 'WorkflowStatusChange', {previousStatus: new BN(0) , newStatus: new BN(1)} );
+              //Insérer ici
             });
 
             it("L'event du passage à ProposalsRegistrationEnded fonctionne", async() => {
-              const stateData2 = await MarketplaceNFTInstance.endProposalsRegistering({from: owner});
-              expectEvent(stateData2, 'WorkflowStatusChange', {previousStatus: new BN(1) , newStatus: new BN(2)} );
+              //Insérer ici
             });
 
             // TEST DES EVENTS
             it("L'event du passage à ProposalsRegistrationStarted fonctionne", async() => {
               const stateData1 = await MarketplaceNFTInstance.workflowStatus.call();
-              expect(new BN(stateData1)).to.be.bignumber.equal(new BN(0));
-
-              const stateData2 = await MarketplaceNFTInstance.startProposalsRegistering({from: owner});
-              expectEvent(stateData2, 'WorkflowStatusChange', {previousStatus: new BN(0) , newStatus: new BN(1)} );
+              //Insérer ici
             });
         });
     });
 
-
+// ------------------------------------- SUITE A TRAVAILLER ----------------------------------------------
     describe("Test de MarketplaceNFT.", function() {
         
         context("Test de sellNFT", function() {
             before(async() => {
                 MarketplaceNFTInstance = await MarketplaceNFT.new({from: owner});
+                instanceCollectionNFT = await adressedelacollection;
+                adressedelacollection.setApprovalForAll(marketplaceNFTInstance, true, {from:owner}); // voir avec Clément
             });
 
             it("", async() => {
-                /**Insérer ici */
+                //Insérer ici
             });
         });
 
@@ -130,7 +104,7 @@ contract("MarketplaceNFT", accounts => {
             });
 
             it("", async() => {
-                /**Insérer ici */
+                //Insérer ici
             });
       });
 
@@ -140,7 +114,7 @@ contract("MarketplaceNFT", accounts => {
             });
 
             it("", async() => {
-                /**Insérer ici */
+                //Insérer ici
             });
         });
 
@@ -150,7 +124,7 @@ contract("MarketplaceNFT", accounts => {
             });
 
             it("", async() => {
-                /**Insérer ici */
+                //Insérer ici
             });
         });
 
@@ -160,7 +134,7 @@ contract("MarketplaceNFT", accounts => {
             });
 
             it("", async() => {
-                /**Insérer ici */
+                //Insérer ici
             });
         });
 
@@ -170,7 +144,7 @@ contract("MarketplaceNFT", accounts => {
             });
 
             it("", async() => {
-                /**Insérer ici */
+                //Insérer ici
             });
         });
 
