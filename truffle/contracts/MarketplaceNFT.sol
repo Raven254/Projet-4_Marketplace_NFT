@@ -189,7 +189,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _name Nom de la collection NFT.
     ///@param _nftId ID du NFT que l'on met en vente.
     ///@param _price Prix du NFT.
-    function createOffer(string calldata _name, uint _nftId, uint _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
+    function sellNFT(string calldata _name, uint _nftId, uint _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
         uint priceInWei = _price * 10e18;
         require(priceInWei >= 0, unicode"Vous devez paramétrer un prix positif ou nul.");
         require(_nftId > 0, unicode"L'Id de votre NFT doit être supérieur à 0.");
