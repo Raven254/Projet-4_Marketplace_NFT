@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getWeb3 from "./getWeb3";
-import NFTFactory from "./contracts/NFTFactory.json";
+import MarketplaceNFT from "./contracts/MarketplaceNFT.json";
 import { Route, Routes } from "react-router-dom";
 
 import Home from "./components/Home/Home";
@@ -21,7 +21,7 @@ function App() {
     web3: null,
     accounts: null,
     contract: null,
-    contractNFTFactory: null,
+    contractMarketplaceNFT: null,
     myCollection: null
   });
   const [contractState, setContractState] = useState({
@@ -42,13 +42,13 @@ function App() {
         // Get the contract instance.
         const networkId = await web3.eth.net.getId();
         console.log(networkId);
-        const deployedNetwork = NFTFactory.networks[networkId];
+        const deployedNetwork = MarketplaceNFT.networks[networkId];
         console.log(deployedNetwork);
-        const instanceNFTFactory = new web3.eth.Contract(
-          NFTFactory.abi,
+        const instanceMarketplaceNFT = new web3.eth.Contract(
+          MarketplaceNFT.abi,
           deployedNetwork && deployedNetwork.address
         );
-        console.log(instanceNFTFactory);
+        console.log(instanceMarketplaceNFT);
         //  const deployedNetwork = VotingContract.networks[networkId];
         //  const instance = new web3.eth.Contract(
         //    VotingContract.abi,
@@ -60,8 +60,8 @@ function App() {
         //  let workflowStatus = await instance.methods.workflowStatus().call();
         //  let owner = await instance.methods.owner().call();
         //  setContractState({ owner: owner, workflowStatus: workflowStatus });
-        const myCollectionNFT = await instanceNFTFactory.methods
-          .getCollections(accounts[0])
+        const myCollectionNFT = await instanceMarketplaceNFT.methods
+          .getCollectionsByAddress (accounts[0])
           .call();
 
         console.log(myCollectionNFT);
@@ -69,7 +69,7 @@ function App() {
         setState({
           web3: web3,
           accounts: accounts,
-          contractNFTFactory: instanceNFTFactory,
+          contractMarketplaceNFT: instanceMarketplaceNFT,
           myCollection: myCollectionNFT
         });
       } catch (error) {
@@ -93,7 +93,7 @@ function App() {
           path="/create"
           element={
             <Create
-              contract={state.contractNFTFactory}
+              contract={state.contractMarketplaceNFT}
               addr={state.accounts}
               myCollection={state.myCollection}
             />
@@ -109,7 +109,7 @@ function App() {
           path="/collection/:id"
           element={
             <Collection
-              contract={state.contractNFTFactory}
+              contract={state.contractMarketplaceNFT}
               addr={state.accounts}
             />
           }
