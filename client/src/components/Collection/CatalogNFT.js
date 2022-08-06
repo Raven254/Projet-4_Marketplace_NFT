@@ -27,7 +27,7 @@ const CatalogNFT = (props) => {
       <div className="catalog__btn">
         {props.price != null ? (
           <Button
-            to="/Create/"
+            to={`/Collection/${props.nameCollection}/NFT/${props.nftId}`}
             onMouseEnter={onHover}
             onMouseLeave={onHover}
             primary="true"
@@ -54,7 +54,7 @@ const CatalogNFT = (props) => {
 CatalogNFT.propTypes = {
   nftId: PropTypes.string.isRequired,
   nameCollection: PropTypes.string.isRequired,
-  // img: PropTypes.string.isRequired,
+  img: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
 };
 

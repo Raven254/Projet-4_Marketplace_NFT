@@ -6,7 +6,7 @@ import CatalogNFT from "./CatalogNFT";
 import Filter from "./Filter";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Collection = ({ contract,addr }) => {
+const Collection = ({ contract, addr }) => {
   const params = useParams();
   // const result = getAllCollections().find(({ id }) => id == params.id);
   const [popular, setPopular] = useState([]);
@@ -57,7 +57,7 @@ const Collection = ({ contract,addr }) => {
           {filtered.map((item, index) => (
             <CatalogNFT
               key={index}
-              img={item.image}
+              img={item.tokenURI}
               price={item.price}
               nftId={item.nftId}
               nameCollection={params.nameCollection}
