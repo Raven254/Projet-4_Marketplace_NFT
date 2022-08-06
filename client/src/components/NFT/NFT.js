@@ -1,12 +1,13 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import getAllCollections from "../../fake_data/Collections";
+import { useParams, useNavigate } from "react-router-dom";
+import ERC721 from "../../contracts/ERC721.json";
 
-function NFT({ contract, addr }) {
+function NFT({ contract, addr, web3 }) {
   const state = {
     Price: "",
   };
+  let navigate = useNavigate();
   const params = useParams();
   const [NFT, setNFT] = useState([]);
   // const collection = getAllCollections().find(
@@ -20,11 +21,54 @@ function NFT({ contract, addr }) {
         .getItemByCollections(params.nameCollection, params.nftId)
         .call();
       setNFT(itemByCollection);
+      console.log(itemByCollection);
     })();
   }, []);
+  const SelectedPrice = (event) => {
+    state.Price = event.target.value;
+  };
 
   const addPrice = (event) => {
-    console.log(event.target.value);
+    // console.log(state.Price);
+    // console.log(NFT.nftInstance);
+    // console.log(contract._address);
+    sellNFT(params.nameCollection, NFT.nftId, state.Price);
+  };
+  const buy = (event) => {
+    // console.log(state.Price);
+    // console.log(NFT.nftInstance);
+    const priceWei = web3.utils.toWei(NFT.totalPrice, "ether");
+    const gas =
+      web3.utils.toWei(NFT.totalPrice, "ether") -
+      web3.utils.toWei(NFT.price, "ether");
+    console.log(gas);
+    buyNFT(params.nameCollection, NFT.nftId, priceWei, gas);
+  };
+  const buyNFT = async (nameCollection, nftId, price, gas) => {
+    const instanceERC721 = new web3.eth.Contract(ERC721.abi, NFT.nftInstance);
+    const approve = await instanceERC721.methods
+      .setApprovalForAll(contract._address, true)
+      .send({ from: addr[0] });
+    console.log(approve);
+    console.log(price);
+    const send = await contract.methods
+      .purchaseNFT(nameCollection, nftId)
+      .send({ from: addr[0], value: price, gas: 30000000 })
+      .then((result) => navigate("/"))
+      .catch((error) => console.log(error));
+  };
+
+  const sellNFT = async (nameCollection, nftId, price) => {
+    const instanceERC721 = new web3.eth.Contract(ERC721.abi, NFT.nftInstance);
+    const approve = await instanceERC721.methods
+      .setApprovalForAll(contract._address, true)
+      .send({ from: addr[0] });
+    console.log(approve);
+    const send = await contract.methods
+      .sellNFT(nameCollection, nftId, price)
+      .send({ from: addr[0] })
+      .then((result) => navigate("/"))
+      .catch((error) => console.log(error));
   };
   return (
     <div
@@ -53,7 +97,7 @@ function NFT({ contract, addr }) {
         </h2>
       </div>
       <div className="NFT_section">
-        {/* <img src={state.NFT.image} className="img_NFT" alt="" /> */}
+        <img src={NFT.tokenURI} className="img_NFT" alt="" />
         <div className="NFT_information">
           <h3
             style={{
@@ -87,6 +131,7 @@ function NFT({ contract, addr }) {
                 className="form-control"
                 id="Price"
                 name="Price"
+                onChange={SelectedPrice}
               />
               <button className="buttonForm" onClick={addPrice}>
                 Ajoutez
@@ -99,7 +144,9 @@ function NFT({ contract, addr }) {
           )}
           {NFT.selling == true && NFT.seller != addr ? (
             <div>
-              <button className="active">Achetez </button>
+              <button className="active" onClick={buy}>
+                Achetez
+              </button>
             </div>
           ) : NFT.seller == addr ? (
             <div></div>

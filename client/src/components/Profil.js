@@ -6,11 +6,7 @@ const profil = {
   address: "0x545rt54et5y545454",
 };
 
-const Profil = ({addr,myCollection}) => {
-  const result = getAllCollections().find(({ id }) => id == 1);
-  const result_NFT = result.NFT;
-  const data = result_NFT.filter((pop) => pop.address == profil.address);
-  
+const Profil = ({ addr, myCollection }) => {
   return (
     <div
       style={{
@@ -26,17 +22,35 @@ const Profil = ({addr,myCollection}) => {
           height: 150,
         }}
       >
-        <h2 style={{ fontSize: "2em", textAlign: "center" }}>Welcome {addr}</h2>
+        <h2 style={{ fontSize: "2em", textAlign: "center" }}>
+          Bienvenue {addr}
+        </h2>
       </div>
       <div className="explore__content">
-        {myCollection.map((item, index) => (
-          <Catalog
-            key={index}
-            img={item.tokenUri}
-            name={item.name}
-            id={index}
-          />
-        ))}
+        {myCollection.length == 0 ? (
+          <div
+            style={{
+              padding: 25,
+              height: 400,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <h3 style={{ fontSize: "1.5em", textAlign: "center" }}>
+              Vous n'avez pas de collection
+            </h3>
+          </div>
+        ) : (
+          myCollection.map((item, index) => (
+            <Catalog
+              key={index}
+              img={item.tokenUri}
+              name={item.name}
+              id={index}
+            />
+          ))
+        )}
       </div>
     </div>
   );

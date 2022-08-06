@@ -202,14 +202,14 @@ contract MarketplaceNFT is ReentrancyGuard {
         require(_nftId > 0, unicode"L'Id de votre NFT doit être supérieur à 0.");
         NFT721 memory itemInstance = getItemByCollections(_name, _nftId);
         require(itemInstance.selling == false, unicode"Le NFT est déjà en vente.");
-        
+
         IERC721 nft = itemInstance.nftInstance;
         
         int totalPrice = _price*(1000+feePercent)/1000;
 
         //nft.setApprovalForAll(address(this), true);
         nft.transferFrom(msg.sender, address(this), _nftId);
-        
+
         itemsByCollectionMap[_name][_nftId-1].price = _price;
         itemsByCollectionMap[_name][_nftId-1].totalPrice = totalPrice;
         itemsByCollectionMap[_name][_nftId-1].selling = true;
@@ -249,22 +249,21 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _name Nom de la collection NFT.
     ///@param _nftId ID du NFT.
     function purchaseNFT(string calldata _name, uint _nftId) external payable nonReentrant {
-        
+
         require(_nftId > 0 && _nftId <= itemsByCollectionMap[_name].length, "Ce NFT n'existe pas.");
         require(keccak256(abi.encodePacked(_name)) != keccak256(abi.encodePacked("")), unicode"Veuillez entrer un nom de collection.");
         NFT721 memory itemInstance = getItemByCollections(_name, _nftId); // instanciation du NFT dont on souhaite arrêter la vente
-        
+
         int totalPrice = itemInstance.totalPrice;
 
         require(int(msg.value) >= totalPrice, "Veuillez envoyer le montant exact.");
         require(msg.value > 0, "Veuillez envoyer le montant exact.");
         require(itemInstance.selling == true, unicode"Ce NFT n'est pas en vente ou a déjà été vendu");
-        
+ 
         address owner = msg.sender;
         IERC721 nft = itemInstance.nftInstance;
         nft.transferFrom(owner, marketplaceContract, _nftId);
         nft.transferFrom(marketplaceContract, owner, _nftId);
-
 
         itemInstance.seller.transfer(uint(itemInstance.price));
         //itemInstance.nftInstance.safeTransferFrom(address(this), msg.sender, itemInstance.nftId);
@@ -272,7 +271,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         itemsByCollectionMap[_name][_nftId-1].price = 0;
         itemsByCollectionMap[_name][_nftId-1].seller = payable(msg.sender);
         itemsByCollectionMap[_name][_nftId-1].selling = false;
-        
+
         emit Bought(
             _nftId,
             address(itemInstance.nftInstance), 
@@ -280,7 +279,8 @@ contract MarketplaceNFT is ReentrancyGuard {
             itemInstance.seller,
             msg.sender
         );
-    }   
+    }
+
 
     ///@notice Calcule le total du prix à payer avec les fees.
     ///@param _name Nom de la collection NFT.

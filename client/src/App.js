@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import getWeb3 from "./getWeb3";
 import MarketplaceNFT from "./contracts/MarketplaceNFT.json";
 import { Route, Routes } from "react-router-dom";
+import getWeb3 from "./getWeb3";
 
 import Home from "./components/Home/Home";
 import Create from "./components/Create";
@@ -23,7 +23,7 @@ function App() {
     contract: null,
     contractMarketplaceNFT: null,
     myCollection: null,
-    allCollection: null,
+    allCollection: null
   });
   const [contractState, setContractState] = useState({
     owner: "",
@@ -39,12 +39,9 @@ function App() {
 
         // Use web3 to get the user's accounts.
         const accounts = await web3.eth.getAccounts();
-        console.log(accounts[0]);
         // Get the contract instance.
         const networkId = await web3.eth.net.getId();
-        console.log(networkId);
         const deployedNetwork = MarketplaceNFT.networks[networkId];
-        console.log(deployedNetwork);
         const instanceMarketplaceNFT = new web3.eth.Contract(
           MarketplaceNFT.abi,
           deployedNetwork && deployedNetwork.address
@@ -57,7 +54,6 @@ function App() {
         const allCollection = await instanceMarketplaceNFT.methods
           .getAllCollections()
           .call();
-        
 
         console.log(myCollectionNFT);
 
@@ -116,6 +112,7 @@ function App() {
             <NFT
               contract={state.contractMarketplaceNFT}
               addr={state.accounts}
+              web3={state.web3}
             />
           }
         />

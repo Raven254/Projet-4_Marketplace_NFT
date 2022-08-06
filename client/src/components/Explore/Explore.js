@@ -19,7 +19,7 @@ const Explore = ({ allCollection }) => {
         }}
       >
         <h2 style={{ fontSize: "2em", textAlign: "center" }}>
-          Explore the collections
+          Explorez les collections
         </h2>
       </div>
       <div className="explore__content">
