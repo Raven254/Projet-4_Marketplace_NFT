@@ -23,7 +23,7 @@ function App() {
     contract: null,
     contractMarketplaceNFT: null,
     myCollection: null,
-    allCollection: null
+    allCollection: null,
   });
   const [contractState, setContractState] = useState({
     owner: "",
