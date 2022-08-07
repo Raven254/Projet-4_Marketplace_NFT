@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/Projet-4_Marketplace_NFT/static/css/main.41086981.chunk.css",
-    "main.js": "/Projet-4_Marketplace_NFT/static/js/main.32c7832d.chunk.js",
-    "main.js.map": "/Projet-4_Marketplace_NFT/static/js/main.32c7832d.chunk.js.map",
+    "main.js": "/Projet-4_Marketplace_NFT/static/js/main.a4170941.chunk.js",
+    "main.js.map": "/Projet-4_Marketplace_NFT/static/js/main.a4170941.chunk.js.map",
     "runtime-main.js": "/Projet-4_Marketplace_NFT/static/js/runtime-main.7b79cfdd.js",
     "runtime-main.js.map": "/Projet-4_Marketplace_NFT/static/js/runtime-main.7b79cfdd.js.map",
     "static/js/2.180096d4.chunk.js": "/Projet-4_Marketplace_NFT/static/js/2.180096d4.chunk.js",
@@ -18,6 +18,6 @@
     "static/js/runtime-main.7b79cfdd.js",
     "static/js/2.180096d4.chunk.js",
     "static/css/main.41086981.chunk.css",
-    "static/js/main.32c7832d.chunk.js"
+    "static/js/main.a4170941.chunk.js"
   ]
 }
