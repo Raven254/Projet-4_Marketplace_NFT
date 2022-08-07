@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Truffle project with SimpleStorage contract",
   "main": "truffle-config.js",
+  "homepage": "https://raven254.github.io/Projet-4_Marketplace_NFT/",
   "dependencies": {
     "@chainlink/contracts": "^0.4.2",
     "@openzeppelin/contracts": "^4.7.1",
@@ -10,7 +11,9 @@
     "dotenv": "^16.0.1"
   },
   "scripts": {
-    "test": "truffle test"
+    "test": "truffle test",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "",
   "license": "MIT",
