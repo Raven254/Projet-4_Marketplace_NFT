@@ -205,8 +205,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _price Prix du NFT.
     function sellNFT(string calldata _name, uint _nftId, int _price) external nonReentrant { // toWei pour adapter le prix d'ether à wei sur web3js
         //int priceInWei = _price * 10e18;
-        require(_price >= 0, unicode"Vous devez paramétrer un prix positif ou nul.");
-        require(_nftId > 0, unicode"L'Id de votre NFT doit être supérieur à 0.");
+        require(_price > 0, unicode"Vous devez donner un prix strictement positif à votre NFT.");
+        require(_nftId > 0, unicode"L'Id de votre NFT ne peut être égal à 0.");
         NFT721 memory itemInstance = getItemByCollections(_name, _nftId);
         require(itemInstance.selling == false, unicode"Le NFT est déjà en vente.");
 
@@ -235,8 +235,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _nftId ID du NFT.
     function stopSelling(string calldata _name, uint _nftId) external {
         NFT721 memory itemInstance = getItemByCollections(_name, _nftId); // instanciation du NFT dont on souhaite arrêter la vente
-        require(msg.sender == itemInstance.seller, unicode"Vous n'êtes pas le vendeur du NFT");
-        require(itemInstance.selling == true, "Le NFT nest pas en vente actuellement");
+        require(msg.sender == itemInstance.seller, unicode"Vous n'êtes pas le vendeur du NFT.");
+        require(itemInstance.selling == true, "Ce NFT n'est pas en vente.");
 
         IERC721 nft = itemInstance.nftInstance;
 
@@ -267,7 +267,7 @@ contract MarketplaceNFT is ReentrancyGuard {
         int totalPrice = itemInstance.totalPrice;
 
         require(int(msg.value) >= totalPrice, "Veuillez envoyer le montant exact.");
-        require(itemInstance.selling == true, unicode"Ce NFT n'est pas en vente ou a déjà été vendu");
+        require(itemInstance.selling == true, unicode"Ce NFT n'est pas en vente ou a déjà été vendu.");
  
         IERC721 nft = itemInstance.nftInstance;
         nft.transferFrom(marketplaceContract, msg.sender, _nftId);
@@ -286,7 +286,7 @@ contract MarketplaceNFT is ReentrancyGuard {
             _nftId,
             uri,
             address(itemInstance.nftInstance), 
-            totalPrice,
+            0,
             itemInstance.seller,
             msg.sender
         );
