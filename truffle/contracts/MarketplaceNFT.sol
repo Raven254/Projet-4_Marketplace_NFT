@@ -5,6 +5,7 @@ pragma solidity 0.8.14;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
+import "../node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
@@ -48,7 +49,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     mapping (address => collection721[]) collectionMap;
     mapping (string => NFT721[]) itemsByCollectionMap;
 
-    collection721[] allNFTCollections;
+    collection721[] public allNFTCollections; // Ne renverra pas le bon totalSupply.
 
     event NFTCollection721Created(
         address creator,
@@ -70,6 +71,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     //event Offered pour signaler une mise en vente
     event Offered (
         uint _nftId,
+        string uri,
         address indexed _contract, 
         int _price,
         address indexed _seller
@@ -78,6 +80,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     //event StopSelling pour signaler l'arrêt d'une vente
     event StopSelling (
         uint _nftId,
+        string uri,
         address indexed _contract, 
         address indexed _seller
     ); // indexed permet d'utiliser un filtre en cherchant dans les events
@@ -85,6 +88,7 @@ contract MarketplaceNFT is ReentrancyGuard {
     // event Bought pour signaler un achat
     event Bought (
         uint _nftId,
+        string uri,
         address indexed _contract, 
         int _price,
         address indexed _seller,
@@ -176,9 +180,8 @@ contract MarketplaceNFT is ReentrancyGuard {
     ///@param _key Clé de la collection dans le mapping collectionMap.
     ///@param _uri URI du NFT à mint.
     function mintExistingCollection721(uint _key, string calldata _uri) external {
-        require(_key < collectionMap[msg.sender].length);
+        require(_key < collectionMap[msg.sender].length, unicode"La _key doit être inférieure strictement au nombre de collections possédées.");
         collection721 memory collectionStruct = collectionMap[msg.sender][_key];
-        require(collectionStruct.exist == true);
 
         NFTCollection721 collection = NFTCollection721(collectionStruct.collectionAddress);
         uint256 _id = collection.tokenIds();
@@ -209,6 +212,7 @@ contract MarketplaceNFT is ReentrancyGuard {
 
         IERC721 nft = itemInstance.nftInstance;
         
+        string memory uri = itemsByCollectionMap[_name][_nftId-1].tokenURI;
         int totalPrice = _price*(1000+feePercent)/1000;
 
         nft.safeTransferFrom(msg.sender, address(this), _nftId);
@@ -219,6 +223,7 @@ contract MarketplaceNFT is ReentrancyGuard {
 
         emit Offered(
         _nftId,
+        uri,
         address(nft), 
         _price,
         msg.sender
@@ -235,6 +240,8 @@ contract MarketplaceNFT is ReentrancyGuard {
 
         IERC721 nft = itemInstance.nftInstance;
 
+        string memory uri = itemsByCollectionMap[_name][_nftId-1].tokenURI;
+
         nft.transferFrom(address(this), msg.sender, _nftId);
         itemsByCollectionMap[_name][_nftId-1].price = 0;
         itemsByCollectionMap[_name][_nftId-1].totalPrice = 0;
@@ -242,6 +249,7 @@ contract MarketplaceNFT is ReentrancyGuard {
 
         emit StopSelling(
         _nftId,
+        uri,
         address(nft), 
         msg.sender
         );
@@ -267,6 +275,8 @@ contract MarketplaceNFT is ReentrancyGuard {
         itemInstance.seller.transfer(uint(itemInstance.price));
         //itemInstance.nftInstance.safeTransferFrom(address(this), msg.sender, itemInstance.nftId);
 
+        string memory uri = itemsByCollectionMap[_name][_nftId-1].tokenURI;
+
         itemsByCollectionMap[_name][_nftId-1].price = 0;
         itemsByCollectionMap[_name][_nftId-1].totalPrice = 0;
         itemsByCollectionMap[_name][_nftId-1].seller = payable(msg.sender);
@@ -274,6 +284,7 @@ contract MarketplaceNFT is ReentrancyGuard {
 
         emit Bought(
             _nftId,
+            uri,
             address(itemInstance.nftInstance), 
             totalPrice,
             itemInstance.seller,
@@ -310,6 +321,5 @@ contract MarketplaceNFT is ReentrancyGuard {
     function onERC721Received( address operator, address from, uint256 tokenId, bytes calldata data ) public pure returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
     }
-    
-    
+        
 }   
