@@ -68,6 +68,12 @@ contract MarketplaceNFT is ReentrancyGuard {
         uint collectionMapArrayKey
     );
 
+    event DepositReceived(
+        address addr,
+        uint value
+    );
+
+
     //event Offered pour signaler une mise en vente
     event Offered (
         uint _nftId,
@@ -321,5 +327,16 @@ contract MarketplaceNFT is ReentrancyGuard {
     function onERC721Received( address operator, address from, uint256 tokenId, bytes calldata data ) public pure returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
     }
-        
+
+    ///@dev Fonction receive
+    receive() external payable {
+        emit DepositReceived(msg.sender, msg.value);
+    }
+
+    ///@dev Fonction fallback
+    fallback() external payable {
+        require(msg.data.length == 0, 'We cannot accept your sending.');
+        emit DepositReceived(msg.sender, msg.value);
+    }
+
 }   
