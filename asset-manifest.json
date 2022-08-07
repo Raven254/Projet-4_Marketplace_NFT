@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/Projet-4_Marketplace_NFT/static/css/main.41086981.chunk.css",
+    "main.js": "/Projet-4_Marketplace_NFT/static/js/main.32c7832d.chunk.js",
+    "main.js.map": "/Projet-4_Marketplace_NFT/static/js/main.32c7832d.chunk.js.map",
+    "runtime-main.js": "/Projet-4_Marketplace_NFT/static/js/runtime-main.7b79cfdd.js",
+    "runtime-main.js.map": "/Projet-4_Marketplace_NFT/static/js/runtime-main.7b79cfdd.js.map",
+    "static/js/2.180096d4.chunk.js": "/Projet-4_Marketplace_NFT/static/js/2.180096d4.chunk.js",
+    "static/js/2.180096d4.chunk.js.map": "/Projet-4_Marketplace_NFT/static/js/2.180096d4.chunk.js.map",
+    "index.html": "/Projet-4_Marketplace_NFT/index.html",
+    "static/css/main.41086981.chunk.css.map": "/Projet-4_Marketplace_NFT/static/css/main.41086981.chunk.css.map",
+    "static/js/2.180096d4.chunk.js.LICENSE.txt": "/Projet-4_Marketplace_NFT/static/js/2.180096d4.chunk.js.LICENSE.txt",
+    "static/media/certif_logo.6516bb6e.png": "/Projet-4_Marketplace_NFT/static/media/certif_logo.6516bb6e.png",
+    "static/media/loader.520e8724.gif": "/Projet-4_Marketplace_NFT/static/media/loader.520e8724.gif",
+    "static/media/video_project4.7d1ea6a9.mp4": "/Projet-4_Marketplace_NFT/static/media/video_project4.7d1ea6a9.mp4"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7b79cfdd.js",
+    "static/js/2.180096d4.chunk.js",
+    "static/css/main.41086981.chunk.css",
+    "static/js/main.32c7832d.chunk.js"
+  ]
+}
