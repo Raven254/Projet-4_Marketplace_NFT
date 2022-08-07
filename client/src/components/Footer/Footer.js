@@ -23,7 +23,7 @@ const Footer = () => {
           <FooterLinksWrapper>
             <FooterLinkItems>
               <FooterLinkTitle>Nos pages</FooterLinkTitle>
-              <FooterLink to="/">Acceuil</FooterLink>
+              <FooterLink to="/">Accueil</FooterLink>
               <FooterLink to="/Explore">Collections</FooterLink>
               <FooterLink to="/Create">Creation</FooterLink>
               <FooterLink to="/Profil">Profil</FooterLink>
