@@ -1,10 +1,5 @@
 import React from "react";
-import getAllCollections from "../fake_data/Collections";
 import Catalog from "./Explore/Catog";
-
-const profil = {
-  address: "0x545rt54et5y545454",
-};
 
 const Profil = ({ addr, myCollection }) => {
   return (

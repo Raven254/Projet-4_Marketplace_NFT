@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MarketplaceNFT from "./contracts/MarketplaceNFT.json";
 import { Route, Routes } from "react-router-dom";
 import getWeb3 from "./getWeb3";
+import { toast, ToastContainer } from "react-toastify";
 
 import Home from "./components/Home/Home";
 import Create from "./components/Create";
@@ -117,6 +118,7 @@ function App() {
           }
         />
       </Routes>
+      <ToastContainer />
       <Footer />
     </div>
   );

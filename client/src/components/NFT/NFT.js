@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ERC721 from "../../contracts/ERC721.json";
 import Loader from "../Loader/Loader";
+import certifNFT from "../../Images/certif_logo.png";
+import { toast, ToastContainer } from "react-toastify";
 
 function NFT({ contract, addr, web3 }) {
   const state = {
@@ -43,8 +45,20 @@ function NFT({ contract, addr, web3 }) {
     const stop = await contract.methods
       .stopSelling(nameCollection, nftId)
       .send({ from: addr[0] })
-      .then((result) => navigate("/"))
-      .catch((error) => console.log(error));
+      .then((result) => {
+        toast.success(
+          `Vous avez stoppé la vente du NFT !`,
+          { position: toast.POSITION.BOTTOM_CENTER, autoClose: 4000 }
+        );
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(`Erreur durant la transaction !`, {
+          position: toast.POSITION.BOTTOM_CENTER,
+          autoClose: 4000,
+        });
+        navigate("/");
+      });
   };
   const buyNFT = async (nameCollection, nftId, price) => {
     // const instanceERC721 = new web3.eth.Contract(ERC721.abi, NFT.nftInstance);
@@ -57,8 +71,20 @@ function NFT({ contract, addr, web3 }) {
     const send = await contract.methods
       .purchaseNFT(nameCollection, nftId)
       .send({ from: addr[0], value: price })
-      .then((result) => navigate("/"))
-      .catch((error) => console.log(error));
+      .then((result) => {
+        toast.success(
+          `Vous venez d'acheter un NFT !`,
+          { position: toast.POSITION.BOTTOM_CENTER, autoClose: 4000 }
+        );
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(`Erreur durant la transaction !`, {
+          position: toast.POSITION.BOTTOM_CENTER,
+          autoClose: 4000,
+        });
+        navigate("/");
+      });
   };
 
   const sellNFT = async (nameCollection, nftId, price) => {
@@ -71,8 +97,20 @@ function NFT({ contract, addr, web3 }) {
     const send = await contract.methods
       .sellNFT(nameCollection, nftId, price)
       .send({ from: addr[0] })
-      .then((result) => navigate("/"))
-      .catch((error) => console.log(error));
+      .then((result) => {
+        toast.success(
+          `Vous avez mis en vente votre NFT !`,
+          { position: toast.POSITION.BOTTOM_CENTER, autoClose: 4000 }
+        );
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(`Erreur durant la transaction !`, {
+          position: toast.POSITION.BOTTOM_CENTER,
+          autoClose: 4000,
+        });
+        navigate("/");
+      });
   };
   return (
     <div>
@@ -167,6 +205,21 @@ function NFT({ contract, addr, web3 }) {
                   <p>Ce NFT n'est pas à vendre</p>
                 </div>
               )}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "end",
+                  alignItems: "center",
+                  height: 200,
+                }}
+              >
+                <a
+                  href="https://www.tokenart.org/licence"
+                  target="_blank"
+                >
+                  <img src={certifNFT} />
+                </a>
+              </div>
             </div>
           </div>
         </div>

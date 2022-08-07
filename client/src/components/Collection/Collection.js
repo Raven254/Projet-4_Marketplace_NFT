@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import getAllCollections from "../../fake_data/Collections";
 import CatalogNFT from "./CatalogNFT";
 import Filter from "./Filter";
 import { motion, AnimatePresence } from "framer-motion";

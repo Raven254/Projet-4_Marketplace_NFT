@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dropdown from "./Dropdown";
 import Loader from "./Loader/Loader";
+import { toast, ToastContainer } from "react-toastify";
+import "../reactToast.css";
 const { NFTStorage } = require("nft.storage/dist/bundle.esm.min.js");
 
 //apiKey : récupérer peut être la key dans .en
@@ -63,8 +65,34 @@ const Create = ({ contract, addr, myCollection }) => {
     const send = await contract.methods
       .createCollection721(nameCollection, symbol, uri)
       .send({ from: addr[0] })
-      .then((result) => navigate("/"))
-      .catch((error) => console.log(error));
+      .then((result) => {
+        let NFTevent = {
+          filter: {
+            creator: "",
+            name: "",
+            symbol: "",
+            collectionAddress: "",
+          },
+          fromBlock: 0,
+        };
+        contract.events
+          .NFTCollection721Created(NFTevent)
+          .on("data", (event) => console.log(event))
+          .on("changed", (changed) => console.log(changed))
+          .on("connected", (str) => console.log(str));
+        toast.success(`Vous avez créé la collection ${nameCollection} !`, {
+          position: toast.POSITION.BOTTOM_CENTER,
+          autoClose: 4000,
+        });
+        setTimeout(() => navigate("/"), 1000);
+      })
+      .catch((error) => {
+        toast.error(`Erreur durant la transaction !`, {
+          position: toast.POSITION.BOTTOM_CENTER,
+          autoClose: 4000,
+        });
+        navigate("/");
+      });
   };
   const uploadIPFSNFT = async (key, imageNFT) => {
     setLoader(true);
@@ -79,8 +107,20 @@ const Create = ({ contract, addr, myCollection }) => {
     const send = await contract.methods
       .mintExistingCollection721(key, uri)
       .send({ from: addr[0] })
-      .then((result) => navigate("/"))
-      .catch((error) => console.log(error));
+      .then((result) => {
+        toast.success(
+          `Vous avez ajouté un nouvel dans la collection ${myCollection[key].name} !`,
+          { position: toast.POSITION.BOTTOM_CENTER, autoClose: 4000 }
+        );
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(`Erreur durant la transaction !`, {
+          position: toast.POSITION.BOTTOM_CENTER,
+          autoClose: 4000,
+        });
+        navigate("/");
+      });
   };
   return (
     <div>
