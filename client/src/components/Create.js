@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dropdown from "./Dropdown";
+import Loader from "./Loader/Loader";
 const { NFTStorage } = require("nft.storage/dist/bundle.esm.min.js");
 
 //apiKey : récupérer peut être la key dans .en
@@ -19,7 +20,7 @@ const Create = ({ contract, addr, myCollection }) => {
     file_collection: null,
     key: null,
   };
-
+  const [loader, setLoader] = useState(false);
   const handleSelect = (event) => {
     state.key = event.target.value;
     console.log(state.key);
@@ -51,6 +52,7 @@ const Create = ({ contract, addr, myCollection }) => {
     nameCollection,
     symbol
   ) => {
+    setLoader(true);
     const cid = await client.storeDirectory([
       new File([imageCollection], nameCollection),
     ]);
@@ -65,6 +67,7 @@ const Create = ({ contract, addr, myCollection }) => {
       .catch((error) => console.log(error));
   };
   const uploadIPFSNFT = async (key, imageNFT) => {
+    setLoader(true);
     const cid = await client.storeDirectory([
       new File([imageNFT], myCollection[key].name),
     ]);
@@ -80,66 +83,72 @@ const Create = ({ contract, addr, myCollection }) => {
       .catch((error) => console.log(error));
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        height: "130vh",
-      }}
-    >
-      <div className="FormCollectionSection">
-        <h1 style={{ fontSize: "3em" }}>Créez une collection</h1>
-        <label htmlFor="NameCollection">Nom de la collection</label>
-        <input
-          type="text"
-          className="form-control"
-          id="NameCollection"
-          name="NameCollection"
-          onChange={SelectedNameCollection}
-        />
-        <label htmlFor="NameCollection">Le symbole</label>
-        <input
-          type="text"
-          className="form-control"
-          id="Symbol"
-          name="Symbol"
-          onChange={SelectedSymbole}
-        />
-        <label htmlFor="NameCollection">Inserez une image</label>
-        <input
-          type="file"
-          className="form-control"
-          id="file_collection"
-          name="file_collection"
-          onChange={fileSelectedHandlerCollection}
-        />
-        <button className="buttonForm" onClick={addCollection}>
-          Ajoutez
-        </button>
-      </div>
-      <div className="FormNFTSection">
-        <h1 style={{ fontSize: "3em", textAlign: "center" }}>
-          Ajoutez un NFT à une collection
-        </h1>
-        <Dropdown
-          label="Choisi la collection :"
-          options={myCollection}
-          value={state.key}
-          onChange={handleSelect}
-        />
-        <label htmlFor="NameCollection">Inserez une image</label>
-        <input
-          type="file"
-          className="form-control"
-          id="file"
-          name="file"
-          onChange={fileSelectedHandlerNFT}
-        />
-        <button className="buttonForm" onClick={fileUploadHandler}>
-          Ajoutez
-        </button>
-      </div>
+    <div>
+      {loader ? (
+        <Loader />
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            height: "130vh",
+          }}
+        >
+          <div className="FormCollectionSection">
+            <h1 style={{ fontSize: "3em" }}>Créez une collection</h1>
+            <label htmlFor="NameCollection">Nom de la collection</label>
+            <input
+              type="text"
+              className="form-control"
+              id="NameCollection"
+              name="NameCollection"
+              onChange={SelectedNameCollection}
+            />
+            <label htmlFor="NameCollection">Le symbole</label>
+            <input
+              type="text"
+              className="form-control"
+              id="Symbol"
+              name="Symbol"
+              onChange={SelectedSymbole}
+            />
+            <label htmlFor="NameCollection">Inserez une image</label>
+            <input
+              type="file"
+              className="form-control"
+              id="file_collection"
+              name="file_collection"
+              onChange={fileSelectedHandlerCollection}
+            />
+            <button className="buttonForm" onClick={addCollection}>
+              Ajoutez
+            </button>
+          </div>
+          <div className="FormNFTSection">
+            <h1 style={{ fontSize: "3em", textAlign: "center" }}>
+              Ajoutez un NFT à une collection
+            </h1>
+            <Dropdown
+              label="Choisi la collection :"
+              options={myCollection}
+              value={state.key}
+              onChange={handleSelect}
+            />
+            <label htmlFor="NameCollection">Inserez une image</label>
+            <input
+              type="file"
+              className="form-control"
+              id="file"
+              name="file"
+              onChange={fileSelectedHandlerNFT}
+            />
+            <button className="buttonForm" onClick={fileUploadHandler}>
+              Ajoutez
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
